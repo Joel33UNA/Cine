@@ -1,0 +1,83 @@
+
+.downdiv{
+    padding: 30px;
+    display: none;
+    vertical-align: top;
+    margin-left: 30px;
+    font-size: 15px;
+}
+
+.updiv{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.father:hover > .downdiv{    
+    display:block;
+    position: absolute;
+    background-color: lightgoldenrodyellow;
+    opacity: 0.9;
+}
+
+.father:hover{
+    transform: scale(1.3);  
+}
+
+.father{
+    margin-left: 10px;
+    
+}
+
+#lista{
+    margin-top: 5px; 
+    border: 3px solid gray;  
+    padding: 20px;
+    overflow:scroll;
+    height:425px;
+    width:500px;
+}
+
+img{
+    width: 300px;
+    border-radius: 10px;
+}
+
+.grid-container{
+    width: 100%;
+    display: inline-grid;
+    grid-gap: 20px 20px;
+    grid-template-columns: auto auto auto auto;
+    color: black;
+    padding: 10px;
+    background: url(../images/father.png);
+}
+
+.grid-item{
+    background-color: black;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+html{
+    background: url(../images/background.png);
+    background-position: center;
+    background-size: cover;
+}
+
+h1{
+    background-color: darkred;
+    color:lemonchiffon;
+    text-align: center;
+}
+
+.seat{
+background-color : #444451; 
+height : 12px ;
+width : 15px; 
+margin : 3px;
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+}
+
