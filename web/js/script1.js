@@ -9,42 +9,72 @@ var movies=[
 ];
 
 
-function mostrarProyecciones(ps){
-    body = document.getElementsByTagName('body')[0];
-        h1 = document.createElement("h1");
-        tx = document.createTextNode("Cinema 2.0");
-        h1.appendChild(tx);
-        body.appendChild(h1);
-        div1 = document.createElement("div");
-        div1.setAttribute("class", "grid-container");
-    for(i = 0; i < ps.length; i++){
-        div2 = document.createElement("div");
-        div2.setAttribute("class", "father");
-        div21 = document.createElement("div");
-            div21.setAttribute("class", "updiv");
-            ima = document.createElement("img");
-            ima.setAttribute("src", ps[i].imagen);
-            div21.appendChild(ima);
-        div22 = document.createElement("div");
-            div22.setAttribute("class", "downdiv");
-            ul = document.createElement("ul");
-            li = document.createElement("li");
-            p = document.createElement("p");
-            texto1 = document.createTextNode(ps[i].name);
-            texto2 = document.createTextNode(ps[i].proyecciones.date[0] + " / " + ps[i].proyecciones.sala);
-            p.appendChild(texto1);
-            li.appendChild(texto2);
-            a = document.createElement("a");
-            a.setAttribute("href", "js/booking.html");
-            a.appendChild(li);
-            ul.appendChild(a);
-            div22.appendChild(p);
-            div22.appendChild(ul);
-        div2.appendChild(div21);    
-        div2.appendChild(div22);
-        div1.appendChild(div2);
-    }
-    body.appendChild(div1);
+function mostrarProyecciones(){
+//    body = document.getElementsByTagName('body')[0];
+//        h1 = document.createElement("h1");
+//        tx = document.createTextNode("Cinema 2.0");
+//        h1.appendChild(tx);
+//        body.appendChild(h1);
+//        div1 = document.createElement("div");
+//        div1.setAttribute("class", "grid-container");
+//    for(i = 0; i < ps.length; i++){
+//        div2 = document.createElement("div");
+//        div2.setAttribute("class", "father");
+//        div21 = document.createElement("div");
+//            div21.setAttribute("class", "updiv");
+//            ima = document.createElement("img");
+//            ima.setAttribute("src", ps[i].imagen);
+//            div21.appendChild(ima);
+//        div22 = document.createElement("div");
+//            div22.setAttribute("class", "downdiv");
+//            ul = document.createElement("ul");
+//            li = document.createElement("li");
+//            p = document.createElement("p");
+//            texto1 = document.createTextNode(ps[i].name);
+//            texto2 = document.createTextNode(ps[i].proyecciones.date[0] + " / " + ps[i].proyecciones.sala);
+//            p.appendChild(texto1);
+//            li.appendChild(texto2);
+//            a = document.createElement("a");
+//            a.setAttribute("href", "js/booking.html");
+//            a.appendChild(li);
+//            ul.appendChild(a);
+//            div22.appendChild(p);
+//            div22.appendChild(ul);
+//        div2.appendChild(div21);    
+//        div2.appendChild(div22);
+//        div1.appendChild(div2);
+//    }
+//    body.appendChild(div1);
 }
 
-mostrarProyecciones(movies);
+//DATOS QUEMADOS, CAMBIAR
+function listar(listado, movie){
+    var div = $("<div />", {"class":"father"});
+	div.html("<div class='updiv'><img src=" + movie.imagen +"></div>"+
+                "<div class='downdiv'>" +  
+                    "<p>" + movie.name + "</p>" +
+                    "<ul>" +
+                        "<li><a href='js/booking.html'>" + movie.proyecciones.date[0] + "/" + movie.proyecciones.sala + "</a></li>" + 
+                    "</ul>" +
+                "</div>");
+	listado.append(div);
+}
+
+function list(){
+    $("#movies").html("");
+    movies.forEach(function(m){
+        listar($("#movies"), m);
+    })
+}
+
+function fetchAndList(){
+    list();
+}
+
+function loaded(){
+    fetchAndList();
+    
+}
+
+
+$(loaded);  

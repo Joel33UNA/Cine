@@ -8,6 +8,8 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package logic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Pelicula {
@@ -15,12 +17,14 @@ public class Pelicula {
     String nombre;
     String estado;
     int precio;
+    List<Proyeccion> proyecciones;
     
     public Pelicula(){
         this.id = 0;
         this.nombre = "";
         this.estado = "";
         this.precio = 0;
+        this.proyecciones = new ArrayList<>();
     }
 
     public Pelicula(int id, String nombre, String estado, int precio) {
@@ -28,6 +32,7 @@ public class Pelicula {
         this.nombre = nombre;
         this.estado = estado;
         this.precio = precio;
+        this.proyecciones = new ArrayList<>();
     }
 
     public String getEstado() {
@@ -60,6 +65,14 @@ public class Pelicula {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public List<Proyeccion> getProyecciones() {
+        return proyecciones;
+    }
+
+    public void setProyecciones(List<Proyeccion> proyecciones) {
+        this.proyecciones = proyecciones;
     }
 
     @Override
