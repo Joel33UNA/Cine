@@ -11,6 +11,8 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import logic.Administrador;
 import logic.Cliente;
 import logic.Usuario;
@@ -54,6 +56,38 @@ public class UsuarioDAO {
         else{
             return null;
         }
+    }
+    
+    public void add(Usuario u) throws Exception{
+        String sql1 = "insert into usuarios values ('%s', '%s', '%s' ,'%s')";
+        sql1 = String.format(sql1, u.getId(), u.getClave(), u.getRol(), u.getNombre());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql1);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Usuario ya existe o CK violentado");
+        }
+        String sql2;
+        switch(u.getRol()){
+            case "cliente": { sql2 = "insert into clientes values ('%s')"; break; }
+            case "administrador": { sql2 = "insert into administradores values ('%s')"; break; }
+            default: { sql2 = ""; break; }
+        }
+        sql2 = String.format(sql2, u.getId());
+        PreparedStatement stm2 = Connection.instance().prepareStatement(sql2);
+        if(Connection.instance().executeUpdate(stm2) == 0){
+            throw new Exception("Usuario ya existe");
+        }
+    }
+    
+    public List<Usuario> filtrarUsuarios(String nombre) throws Exception{
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "select* from usuarios where nombre like '%s'";
+        sql = String.format(sql, nombre);;
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        while(rs.next()){
+            usuarios.add(from(rs));
+        }
+        return usuarios;
     }
     
     public Administrador readAdministrador(String id) throws Exception{

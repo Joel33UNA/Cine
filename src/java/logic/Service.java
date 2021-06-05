@@ -15,6 +15,7 @@ import data.PeliculaDAO;
 import data.ProyeccionDAO;
 import data.SalaDAO;
 import data.UsuarioDAO;
+import java.util.List;
 
 public class Service {
     private static Service instancia;
@@ -41,8 +42,17 @@ public class Service {
         return instancia;
     }
     
+    public void agregarUsuario(Usuario u) throws Exception{
+        usuarios.add(u);
+    }
+    
     public Usuario buscarUsuario(String id) throws Exception{
         Usuario usuario = usuarios.readUsuario(id);
         return usuario;
+    }
+    
+    public List<Usuario> filtrarUsuarios(String nombre) throws Exception{
+        List<Usuario> filtro = usuarios.filtrarUsuarios(nombre);
+        return filtro;
     }
 }

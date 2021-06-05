@@ -1,8 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+UNIVERSIDAD NACIONAL DE COSTA RICA
+EIF-209  -  PROGRAMACIÓN IV
+PROYECTO II
+ESTUDIANTE: JOEL ZAMORA Y DIEGO JIMÉNEZ
+PROFESOR: JOSE SÁNCHEZ SALAZAR
+*/
+
 package presentation;
 
 import java.util.HashSet;
@@ -19,13 +22,12 @@ public class RegistroApplication extends Application {
         HashSet<Class<?>> classes = new HashSet<>();
         classes.add(MultiPartFeature.class);
         System.out.println("added multipart feature");
-        classes.add(Clientes.class);
-        classes.add(Administradores);
-        classes.add(Peliculas);
-        classes.add(Salas);
-        classes.add(Proyecciones);
-        classes.add(Compras);
-        classes.add(Butacas);
+        classes.add(Usuarios.class);
+        classes.add(Peliculas.class);
+        classes.add(Salas.class);
+        classes.add(Proyecciones.class);
+        classes.add(Compras.class);
+        classes.add(Butacas.class);
         return classes;
     }   
 }
