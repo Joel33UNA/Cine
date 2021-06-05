@@ -12,37 +12,70 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        <script src="js/script1.js"> </script>
+        <script src="js/script1.js"></script>
+        <script src="js/header.js"></script>       
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f8eac9;">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Cine/">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Iniciar sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Registrarse</a>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Search">
-                    <button type="button" class="btn btn-danger">Buscar</button>
-                </form>
-            </div>
-        </nav>
+        <div id='nav'></div>
+
         <div class="grid-container" id="movies"></div>
+        
+        <div id='login'>
+            <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" style="width: 400px">
+                    <div class="modal-content">
+                        <div class="modal-header" >
+                            <div class="d-flex justify-content-center" style="width: 90%">  <img class="img-circle" id="img_logo" src="images/user.png" style="max-width: 50px; max-height: 50px"> </div>
+                            <div > <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">&times;</span> </button> </div>
+                        </div>
+                        <form id="formulario" >
+                        <div class="modal-body">
+                            <div id="div-login-msg">
+                                <div id="icon-login-msg" ></div>
+                                <span id="text-login-msg">Agregar Persona</span>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                              <label for="cedula">Cedula</label>
+                              <input type="text" class="form-control" name="cedula" id="cedula" placeholder="Cedula">
+                            </div>
+                            <div class="form-group">
+                              <label for="nonbre">Nombre</label>
+                              <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="sexo">Sexo</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sexo" id="sexoFem" value="F">
+                                    <div id="tdFem"></div>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sexo" id="sexoMasc" value="M">
+                                    <div id="tdMasc"></div>
+                                </div>
+                            </div>                  
+                        </div>
+                        </form>
+                        <form>
+                            <div class="form-group" style="margin-left: 10px; margin-right: 10px;">
+                              <label for="imagen">Imagen</label>
+                              <input type="file" accept="image/*" class="form-control" name="imagen" id="imagen" placeholder="Imagen">
+                            </div>
+                        </form>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <div>
+                                <input type="button" id="aplicar" class="btn btn-primary btn-lg btn-block" value="Aplicar">
+                            </div>
+                        </div>
+
+                        <div id="errorDiv" style="width:70%; margin: auto;"></div>
+                    </div>
+                </div>              
+            </div>
+        </div>
     </body>
 </html>
