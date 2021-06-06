@@ -14,68 +14,21 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css">
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script src="js/script1.js"></script>
-        <script src="js/header.js"></script>       
+        
+        <script src="js/nav.js"></script>  
+        <script src="js/script1.js"></script>     
     </head>
     <body>
         <div id='nav'></div>
 
         <div class="grid-container" id="movies"></div>
         
-        <div id='login'>
-            <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" style="width: 400px">
-                    <div class="modal-content">
-                        <div class="modal-header" >
-                            <div class="d-flex justify-content-center" style="width: 90%">  <img class="img-circle" id="img_logo" src="images/user.png" style="max-width: 50px; max-height: 50px"> </div>
-                            <div > <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">&times;</span> </button> </div>
-                        </div>
-                        <form id="formulario" >
-                        <div class="modal-body">
-                            <div id="div-login-msg">
-                                <div id="icon-login-msg" ></div>
-                                <span id="text-login-msg">Agregar Persona</span>
-                            </div>
-                            <br>
-                            <div class="form-group">
-                              <label for="cedula">Cedula</label>
-                              <input type="text" class="form-control" name="cedula" id="cedula" placeholder="Cedula">
-                            </div>
-                            <div class="form-group">
-                              <label for="nonbre">Nombre</label>
-                              <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
-                            </div>
-                            <div class="form-group">
-                                <label for="sexo">Sexo</label>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="sexoFem" value="F">
-                                    <div id="tdFem"></div>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="sexoMasc" value="M">
-                                    <div id="tdMasc"></div>
-                                </div>
-                            </div>                  
-                        </div>
-                        </form>
-                        <form>
-                            <div class="form-group" style="margin-left: 10px; margin-right: 10px;">
-                              <label for="imagen">Imagen</label>
-                              <input type="file" accept="image/*" class="form-control" name="imagen" id="imagen" placeholder="Imagen">
-                            </div>
-                        </form>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <div>
-                                <input type="button" id="aplicar" class="btn btn-primary btn-lg btn-block" value="Aplicar">
-                            </div>
-                        </div>
-
-                        <div id="errorDiv" style="width:70%; margin: auto;"></div>
-                    </div>
-                </div>              
-            </div>
-        </div>
+        <div id='popuplogin'></div>
+        
+        <div id='popupcheckin'></div>
     </body>
+    
 </html>

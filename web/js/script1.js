@@ -8,56 +8,17 @@ var movies=[
 {"code":777,"name":"Black Widow","imagen": "https://www.tonica.la/__export/1600117063114/sites/debate/img/2020/09/14/black-widow-lanzarx-2-nuevos-trailer.jpg_423682103.jpg","price": 8000,"proyecciones":{"date":["Jul 02, 2pm"], "sala":"G4","occupancy":[{"row":1,"col":7},{"row":1,"col":8}]}}
 ];
 
-
-function mostrarProyecciones(){
-//    body = document.getElementsByTagName('body')[0];
-//        h1 = document.createElement("h1");
-//        tx = document.createTextNode("Cinema 2.0");
-//        h1.appendChild(tx);
-//        body.appendChild(h1);
-//        div1 = document.createElement("div");
-//        div1.setAttribute("class", "grid-container");
-//    for(i = 0; i < ps.length; i++){
-//        div2 = document.createElement("div");
-//        div2.setAttribute("class", "father");
-//        div21 = document.createElement("div");
-//            div21.setAttribute("class", "updiv");
-//            ima = document.createElement("img");
-//            ima.setAttribute("src", ps[i].imagen);
-//            div21.appendChild(ima);
-//        div22 = document.createElement("div");
-//            div22.setAttribute("class", "downdiv");
-//            ul = document.createElement("ul");
-//            li = document.createElement("li");
-//            p = document.createElement("p");
-//            texto1 = document.createTextNode(ps[i].name);
-//            texto2 = document.createTextNode(ps[i].proyecciones.date[0] + " / " + ps[i].proyecciones.sala);
-//            p.appendChild(texto1);
-//            li.appendChild(texto2);
-//            a = document.createElement("a");
-//            a.setAttribute("href", "js/booking.html");
-//            a.appendChild(li);
-//            ul.appendChild(a);
-//            div22.appendChild(p);
-//            div22.appendChild(ul);
-//        div2.appendChild(div21);    
-//        div2.appendChild(div22);
-//        div1.appendChild(div2);
-//    }
-//    body.appendChild(div1);
-}
-
 //DATOS QUEMADOS, CAMBIAR
 function listar(listado, movie){
     var div = $("<div />", {"class":"father"});
-	div.html("<div class='updiv'><img src=" + movie.imagen +"></div>"+
-                "<div class='downdiv'>" +  
-                    "<p>" + movie.name + "</p>" +
-                    "<ul>" +
-                        "<li><a href='js/booking.html'>" + movie.proyecciones.date[0] + "/" + movie.proyecciones.sala + "</a></li>" + 
-                    "</ul>" +
-                "</div>");
-	listado.append(div);
+    div.html("<div class='updiv'><img src=" + movie.imagen +"></div>"+
+            "<div class='downdiv'>" +  
+                "<p>" + movie.name + "</p>" +
+                "<ul>" +
+                    "<li><a href='js/booking.html'>" + movie.proyecciones.date[0] + "/" + movie.proyecciones.sala + "</a></li>" + 
+                "</ul>" +
+            "</div>");
+    listado.append(div);
 }
 
 function list(){
@@ -67,13 +28,104 @@ function list(){
     })
 }
 
+function login(){
+    $("#add-modal-login").modal("show");
+}
+
+function loadLogin(){
+    var div = $("#popuplogin");
+    div.html("<div class='modal fade' id='add-modal-login' tabindex='-1' role'dialog'>" +
+                "<div class='modal-dialog' style='width: 400px'>" +
+                    "<div class='modal-content'>" +
+                        "<div class='modal-header'>" +
+                            "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
+                        "</div>" +
+                        "<form id='formulario'>" +
+                            "<div class='modal-body'>" +
+                                "<div id='div-login-msg'>" +
+                                    "<div id='icon-login-msg'></div>" +
+                                    "<span id='text-login-msg'>Iniciar sesión</span>" +
+                                "</div>" +
+                                "<br>" +
+                                "<div class='form-group'>" +
+                                    "<label for='cedula'>Cédula</label>" +
+                                    "<input type='text' class='form-control' name='cedula' id='cedula' placeholder='Cédula'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='contra'>Contraseña</label>" +
+                                    "<input type='password' class='form-control' name='contra' id='contra' placeholder='Contraseña'>" +
+                                "</div>" +
+                            "</div>" +
+                        "</form>" +
+                        "<div class='modal-footer d-flex justify-content-center'>" +
+                            "<div>" +
+                                "<input type='button' id='aplicar' class='btn btn-primary btn-lg btn-block' value='Aplicar'>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div id='errorDiv' style='width:70%; margin: auto;'></div>" +
+                    "</div>" +
+                "</div>" +
+            "</div>");
+}
+
+function checkin(){
+    $("#add-modal-checkin").modal("show");
+}
+
+function loadCheckin(){
+    var div = $("#popupcheckin");
+    div.html("<div class='modal fade' id='add-modal-checkin' tabindex='-1' role'dialog'>" +
+                "<div class='modal-dialog' style='width: 400px'>" +
+                    "<div class='modal-content'>" +
+                        "<div class='modal-header'>" +
+                            "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
+                        "</div>" +
+                        "<form id='formulario'>" +
+                            "<div class='modal-body'>" +
+                                "<div id='div-login-msg'>" +
+                                    "<div id='icon-login-msg'></div>" +
+                                    "<span id='text-login-msg'>Registrarse</span>" +
+                                "</div>" +
+                                "<br>" +
+                                "<div class='form-group'>" +
+                                    "<label for='nombre'>Cédula</label>" +
+                                    "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='cedula'>Cédula</label>" +
+                                    "<input type='text' class='form-control' name='cedula' id='nombre' placeholder='Cedula'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='contra1'>Contraseña</label>" +
+                                    "<input type='password' class='form-control' name='contra1' id='contra1' placeholder='Contraseña'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='contra2'>Contraseña</label>" +
+                                    "<input type='password' class='form-control' name='contra2' id='contra2' placeholder='Verifique su contraseña'>" +
+                                "</div>" +
+                            "</div>" +
+                        "</form>" +
+                        "<div class='modal-footer d-flex justify-content-center'>" +
+                            "<div>" +
+                                "<input type='button' id='aplicar' class='btn btn-primary btn-lg btn-block' value='Aplicar'>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div id='errorDiv' style='width:70%; margin: auto;'></div>" +
+                    "</div>" +
+                "</div>" +
+            "</div>");
+}
+
 function fetchAndList(){
     list();
+    loadLogin();
+    loadCheckin();
 }
 
 function loaded(){
     fetchAndList();
-    
+    $("#login").click(login);
+    $("#checkin").click(checkin);
 }
 
 
