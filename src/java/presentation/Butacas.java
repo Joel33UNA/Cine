@@ -36,17 +36,16 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("/butacas")
 public class Butacas {
-    String location="C:/imagenesProyecto/butacas/";
-    
+   
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Butaca> search(@DefaultValue("") @QueryParam("sala") int sala) { 
+    public List<Butaca> search(@DefaultValue("") @QueryParam("id_sala") String sala) { 
         try {
             return Service.instancia().butacasSala(sala);
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    } 
+    }
     
     @GET
     @Path("{id}")
@@ -59,15 +58,7 @@ public class Butacas {
         }
     }
     
-    @GET
-    @Path("{id}/imagen")
-    @Produces("image/png")
-    public Response getImge(@PathParam("id") String id) throws IOException {
-        File file = new File(location+id);
-        ResponseBuilder response = Response.ok((Object) file);
-        return response.build();
-    }    
-
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Butaca b) {  
@@ -77,23 +68,4 @@ public class Butacas {
             throw new NotAcceptableException(); 
         }
     }
-    
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA) 
-    @Path("{cedula}/imagen")
-    public void addImage(@PathParam("id") int id, @FormDataParam("imagen") InputStream imagenStream) {  
-        try{
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            OutputStream out = new FileOutputStream(new File(location + id));
-            while ((read = imagenStream.read(bytes)) != -1){
-                out.write(bytes, 0, read);
-            }
-            out.flush();
-            out.close();
-        } catch (Exception ex) {
-            throw new NotAcceptableException(); 
-        }
-    }   
 }

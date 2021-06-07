@@ -82,11 +82,12 @@ public class Service {
         proyecciones.add(p); 
     }
 
-    public List<Butaca> butacasSala(int sala) throws Exception {
+    public List<Butaca> butacasSala(String sala) throws Exception {
+        int s = Integer.parseInt(sala);
         List<Butaca> todas = butacas.readAll();
         List<Butaca> filtro = new ArrayList<>();
         for(Butaca b : todas){
-            if(b.getSala().getId() == sala){
+            if(b.getSala().getId() == s){
                 filtro.add(b);
             }
         }
@@ -103,7 +104,7 @@ public class Service {
     }
 
 
-    public List<Compra> compraCli(String id) throws Exception {
+    public List<Compra> comprasCli(String id) throws Exception {
         List<Compra> todas = compras.readAll();
         List<Compra> filtro = new ArrayList<>();
         for(Compra c : todas){

@@ -36,7 +36,16 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("/compras")
 public class Compras {
-    String location="C:/imagenesProyecto/compras/";
+    
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Compra> getComprasCli(@DefaultValue("") @QueryParam("cliente") String cliente) { 
+        try {
+            return Service.instancia().comprasCli(cliente);
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    }
     
     @GET
     @Path("{id}")
@@ -49,17 +58,6 @@ public class Compras {
         }
     }
     
-    @GET
-    @Path("{clienteId}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Compra> getComprasCli(@PathParam("clienteId") String clienteId) {
-        try {
-            return Service.instancia().compraCli(clienteId);
-        } catch (Exception ex) {
-            throw new NotFoundException(); 
-        }
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Compra c) {  
@@ -68,5 +66,5 @@ public class Compras {
         } catch (Exception ex) {
             throw new NotAcceptableException(); 
         }
-    }  
+    }
 }
