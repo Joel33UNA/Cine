@@ -8,11 +8,6 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package presentation;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -28,13 +23,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import logic.Service;
 import logic.Usuario;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("/usuarios")
-class Usuarios {
+public class Usuarios {
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -56,7 +49,7 @@ class Usuarios {
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    }  
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 

@@ -28,6 +28,7 @@ public class RegistroApplication extends Application {
         classes.add(Proyecciones.class);
         classes.add(Compras.class);
         classes.add(Butacas.class);
+        classes.add(Sesiones.class);
         return classes;
     }   
 }

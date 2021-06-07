@@ -51,6 +51,11 @@ public class Service {
         return usuario;
     }
     
+    public Usuario comprobarUsuario(Usuario u) throws Exception{
+        Usuario usuario = usuarios.read(u.id, u.clave);
+        return usuario;
+    }
+    
     public List<Usuario> filtrarUsuarios(String nombre) throws Exception{
         List<Usuario> filtro = usuarios.filtrarUsuarios(nombre);
         return filtro;

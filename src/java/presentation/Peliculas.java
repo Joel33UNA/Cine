@@ -8,6 +8,6 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package presentation;
 
-class Peliculas {
+public class Peliculas {
     
 }
