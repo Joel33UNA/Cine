@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Pelicula {
-    int id;
-    String nombre;
-    String estado;
-    int precio;
-    List<Proyeccion> proyecciones;
+    private int id;
+    private String nombre;
+    private String estado;
+    private int precio;
+    private List<Proyeccion> proyecciones;
     
     public Pelicula(){
         this.id = 0;

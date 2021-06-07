@@ -11,9 +11,9 @@ package logic;
 import java.util.Objects;
 
 public class Compra {
-    int id;
-    Cliente cliente;
-    Proyeccion proyeccion;
+    private int id;
+    private Cliente cliente;
+    private Proyeccion proyeccion;
     
     public Compra(){
         this.id = 0;

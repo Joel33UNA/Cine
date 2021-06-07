@@ -11,23 +11,33 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import logic.Pelicula;
 import logic.Proyeccion;
 import logic.Sala;
 
 public class ProyeccionDAO {
     
-    public Proyeccion readAll() throws Exception{
+    public void add(Proyeccion p) throws Exception{
+        String sql = "insert into proyecciones (id, id_sala, id_pelicula, fecha)"
+                + "values ('%s', '%s', '%s', '%s')";
+        sql = String.format(sql, p.getId(), p.getSala().getId(), p.getPelicula().getId(), p.getFecha());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Proyeccion ya existe");
+        }
+    }
+    
+    public List<Proyeccion> readAll() throws Exception{
+        List<Proyeccion> proyecs = new ArrayList<>();
         String sql = "select* from proyecciones";
-        sql = String.format(sql);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return from(rs);
+        while(rs.next()){
+            proyecs.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return proyecs;
     }
     
     public Proyeccion readProyeccion(int id) throws Exception{

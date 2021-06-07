@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class Sala {
-    int id;
-    int filas;
-    int columnas;
-    List<Butaca> butacas;
+    private int id;
+    private int filas;
+    private int columnas;
+    private List<Butaca> butacas;
     
     public Sala(){
         this.id = 0;

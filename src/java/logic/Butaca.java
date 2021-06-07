@@ -9,9 +9,9 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 package logic;
 
 public class Butaca {
-    int id;
-    String estado;
-    Sala sala;
+    private int id;
+    private String estado;
+    private Sala sala;
     
     public Butaca(){
         this.id = 0;

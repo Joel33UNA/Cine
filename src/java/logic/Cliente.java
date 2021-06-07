@@ -10,7 +10,7 @@ package logic;
 
 
 public class Cliente extends Usuario {
-    String numTarjeta;
+    private String numTarjeta;
     
     public Cliente(){
         super();

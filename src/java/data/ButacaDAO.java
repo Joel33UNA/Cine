@@ -11,22 +11,32 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import logic.Butaca;
 import logic.Sala;
 
 public class ButacaDAO {
     
-    public Butaca readAll() throws Exception{
+    public void add(Butaca b) throws Exception{
+        String sql = "insert into butacas (id, id_sala, estado)"
+                + "values ('%s', '%s', '%s')";
+        sql = String.format(sql, b.getId(), b.getSala().getId(), b.getEstado());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Butaca ya existe");
+        }
+    }
+    
+    public List<Butaca> readAll() throws Exception{
+        List<Butaca> bu = new ArrayList<>();
         String sql = "select* from butacas";
-        sql = String.format(sql);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return from(rs);
+        while(rs.next()){
+            bu.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return bu;
     }
     
     public Butaca readButaca(int id) throws Exception{

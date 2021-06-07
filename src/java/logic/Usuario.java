@@ -11,10 +11,10 @@ package logic;
 import java.util.Objects;
 
 public class Usuario {
-    String id;
-    String clave;
-    String rol;
-    String nombre;
+    private String id;
+    private String clave;
+    private String rol;
+    private String nombre;
     
     public Usuario(){
         this.id = "";
