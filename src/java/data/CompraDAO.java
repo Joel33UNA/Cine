@@ -11,6 +11,8 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import logic.Compra;
 import logic.Cliente;
 import logic.Pelicula;
@@ -19,17 +21,25 @@ import logic.Sala;
 
 public class CompraDAO {
     
-    public Compra readAll() throws Exception{
-        String sql = "select* from compras where id=%s";
-        sql = String.format(sql);
+    public void add(Compra c) throws Exception{
+        String sql = "insert into compras (id, id_cli, id_pro)"
+                + "values ('%s', '%s', '%s')";
+        sql = String.format(sql, c.getId(), c.getCliente().getId(), c.getProyeccion().getId());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Compra ya existe");
+        }
+    }
+    
+    public List<Compra> readAll() throws Exception{
+        List<Compra> com = new ArrayList<>();
+        String sql = "select* from compras";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return from(rs);
+        while(rs.next()){
+            com.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return com;
     }
     
     public Compra readCompra(int id) throws Exception{

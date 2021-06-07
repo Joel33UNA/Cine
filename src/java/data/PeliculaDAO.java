@@ -11,21 +11,21 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import logic.Pelicula;
 
 public class PeliculaDAO {
     
-    public Pelicula readAll() throws Exception{
-        String sql = "select* from peliculas"; 
-        sql = String.format(sql);
+    public List<Pelicula> readAll() throws Exception{
+        List<Pelicula> pelis = new ArrayList<>();
+        String sql = "select* from peliculas";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return from(rs);
+        while(rs.next()){
+            pelis.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return pelis;
     }
     
     public Pelicula readPelicula(int id) throws Exception{

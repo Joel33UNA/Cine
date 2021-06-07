@@ -12,10 +12,10 @@ import java.util.Objects;
 
 
 public class Proyeccion {
-    int id;
-    Sala sala;
-    Pelicula pelicula;
-    String fecha;
+    private int id;
+    private Sala sala;
+    private Pelicula pelicula;
+    private String fecha;
     
     public Proyeccion(){
         this.id = 0;
