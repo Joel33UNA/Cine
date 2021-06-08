@@ -17,6 +17,7 @@ import data.SalaDAO;
 import data.UsuarioDAO;
 import java.util.ArrayList;
 import java.util.List;
+import presentation.Peliculas;
 
 public class Service {
     private static Service instancia;
@@ -127,5 +128,35 @@ public class Service {
 
     public void compraAdd(Compra c) throws Exception{
         compras.add(c);
+    }
+
+    public List<Pelicula> peliculaSearch(String nombre) throws Exception {
+        List<Pelicula> result = new ArrayList<>();
+        List<Pelicula> todas = peliculas.readAll();
+        for(Pelicula p: todas){
+            if(p.getNombre().contains(nombre) && p.getEstado().equals("en cartelera")) {
+                result.add(p);
+            } 
+        }
+        return result;
+    } 
+
+    public Pelicula pelicEspec(String nombre) throws Exception {
+        Pelicula p = peliculas.readPelicula(nombre);
+        return p;
+    }
+
+    public void peliculaAdd(Pelicula p) throws Exception {
+        peliculas.add(p);
+    }
+
+    public void peliculaUpdate(Pelicula p) throws Exception {
+        Pelicula peli = peliculas.readPelicula(p.getNombre());
+        if(peli.getEstado().equals("en cartelera")){
+            peli.setEstado("bloqueada");
+        }else{
+            peli.setEstado("en cartelera");
+        }
+        peliculas.updatePeli(peli);
     }
 }

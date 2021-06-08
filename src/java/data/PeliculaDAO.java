@@ -28,9 +28,9 @@ public class PeliculaDAO {
         return pelis;
     }
     
-    public Pelicula readPelicula(int id) throws Exception{
-        String sql = "select* from peliculas where id=%s";
-        sql = String.format(sql, id);
+    public Pelicula readPelicula(String nombre) throws Exception{
+        String sql = "select* from peliculas where nombre=%s";
+        sql = String.format(sql, nombre);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
         if(rs.next()){
@@ -51,6 +51,28 @@ public class PeliculaDAO {
             return r;
         } catch (SQLException ex) {
             return null;
+        }
+    }
+
+    public void add(Pelicula p) throws Exception{
+        String sql = "insert into peliculas (id, nombre, estado, precio)"
+                + "values ('%s', '%s', '%s', '%s')";
+        sql = String.format(sql, p.getId(), p.getNombre(), p.getEstado(), p.getPrecio());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Pelicula ya existe");
+        }
+    }
+
+    public void updatePeli(Pelicula peli) throws Exception {
+        String sql="update peliculas set estado=? "+
+                "where nombre=?";
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        stm.setString(1, peli.getEstado());
+        stm.setString(2, peli.getNombre());        
+        int count = Connection.instance().executeUpdate(stm);
+        if (count == 0){
+            throw new Exception("Pelicula no existe");
         }
     }
 }

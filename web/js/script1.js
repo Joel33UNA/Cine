@@ -181,7 +181,7 @@ function loadCheckin(){
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='cedula'>Cédula</label>" +
-                                    "<input type='text' class='form-control' name='cedula' id='cedula2' placeholder='Cedula'>" +
+                                    "<input type='text' class='form-control' name='cedula' id='cedula2' placeholder='Cédula'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='contra1'>Contraseña</label>" +
@@ -237,4 +237,192 @@ function loaded(){
 }
 
 
-$(loaded);  
+//======================================================================================================================================
+//======================================================================================================================================
+//======================================================================================================================================
+//======================================================================================================================================
+
+
+/*
+
+  var peliculas = new Array();
+  var pelicula ={id:0,nombre:"",estado:""};
+  var mode='A'; //adding
+
+
+  function render(){
+	$("#id").val(pelicula.id);
+	$("#nombre").val(pelicula.nombre);
+        $("input[name='estado']").val([pelicula.estado]);
+        switch(mode){
+            case 'A':
+                $("#cedula" ).prop( "readonly", false );
+                $('#aplicar').off('click').on('click', add);
+                break;
+            case 'E':
+                $("#cedula" ).prop( "readonly", true );
+                $('#aplicar').off('click').on('click', update);
+                break;             
+        }
+        $("#add-modal #errorDiv").html("");
+        $("#add-modal #imagen").val("");        
+        $('#add-modal').modal('show');        
+  }
+  
+    function load(){
+        persona = Object.fromEntries( (new FormData($("#formulario").get(0))).entries());       
+    }
+    
+    function reset(){
+        persona={cedula:"", nombre:"",sexo:""}; 
+    }    
+ 
+  function add(){
+    load();
+    if(!validar()) return;
+    let request = new Request(url+'api/personas', {method: 'POST', headers: { 'Content-Type': 'application/json'},body: JSON.stringify(persona)});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}
+        addImagen();
+        fetchAndList();
+        reset();
+        $('#add-modal').modal('hide');                
+    })();    
+  }
+  
+  function addImagen(){
+    var imagenData = new FormData();
+    imagenData.append("cedula", persona.cedula);
+    imagenData.append("imagen", $("#imagen").get(0).files[0]); 
+    let request = new Request(url+'api/personas/'+persona.cedula+"/imagen", {method: 'POST',body: imagenData});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}              
+    })();    
+  }
+  
+  function update(){
+    load();
+    if(!validar()) return;
+    let request = new Request(url+'api/personas', {method: 'PUT', headers: { 'Content-Type': 'application/json'},body: JSON.stringify(persona)});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}
+        fetchAndList();
+        reset();
+        $('#add-modal').modal('hide');                
+    })();     
+  }
+  
+  function validar(){
+    var error=false;
+   $("#formulario input").removeClass("invalid");
+    error |= $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
+    $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= $("input[name='sexo']:checked").length==0;
+    if ( $("input[name='sexo']:checked").length==0) $("#formulario input[name='sexo']").addClass("invalid");
+    return !error;
+  }
+
+  function list(){
+    $("#listado").html("");
+    personas.forEach( (p)=>{row($("#listado"),p);});	
+  }  
+  
+  function row(listado,persona){
+	var tr =$("<tr />");
+	tr.html("<td>"+persona.cedula+"</td>"+
+                "<td>"+persona.nombre+"</td>"+
+                "<td><img src='images/"+persona.sexo+".png' class='icon' ></td>"+
+                "<td><img src='"+url+"api/personas/"+persona.cedula+"/imagen' class='icon_large' ></td>"+                
+                "<td id='edit'><img src='images/edit.png'></td>");
+        tr.find("#edit").on("click",()=>{edit(persona.cedula);});
+	listado.append(tr);           
+  }
+  
+  function edit(cedula){
+    let request = new Request(url+'api/personas/'+cedula, {method: 'GET', headers: { }});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status,$("#buscarDiv #errorDiv"));return;}
+        persona = await response.json();
+        mode='E'; //editing
+        render();        
+    })();         
+  }
+  
+  function makenew(){
+      reset();
+      mode='A'; //adding
+      render();
+    }
+    
+  function search(){
+      //to do
+  }
+
+  function fetchAndList(){
+    let request = new Request(url+'api/personas', {method: 'GET', headers: { }});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status,$("#buscarDiv #errorDiv"));return;}
+        personas = await response.json();
+        list();              
+    })();    
+  } 
+  
+  function loaded(){
+    fetchAndList();
+    $("#crear").click(makenew);        
+    $("#buscar").on("click",search);
+  }
+  
+  function loadIngresoPeli(){
+    var div = $("#popupRegistroPelis");
+    div.html("<div class='modal fade' id='add-modal-login' tabindex='-1' role'dialog'>" +
+                "<div class='modal-dialog' style='width: 400px'>" +
+                    "<div class='modal-content'>" +
+                        "<div class='modal-header'>" +
+                            "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
+                        "</div>" +
+                        "<form id='formulario1'>" +
+                            "<div class='modal-body'>" +
+                                "<div id='div-login-msg'>" +
+                                    "<div id='icon-login-msg'></div>" +
+                                    "<span id='text-login-msg'>Registrar Película</span>" +
+                                "</div>" +
+                                "<br>" +
+                                "<div class='form-group'>" +
+                                    "<label for='nombre'>Nombre</label>" +
+                                    "<input type='text' class='form-control' name='nombre' id='nombre3' placeholder='Nombre'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='precio'>Precio</label>" +
+                                    "<input type='text' class='form-control' name='precio1' id='precio1' placeholder='Precio'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='estado'>Estado</label>" +
+                                    "<div class='form-check form-check-inline'>" +
+                                        "<input class='form-check-input' type='radio' name='estadoC' id='cartelera' value='en cartelera'>" +
+                                        "<div id='carte'></div>" +
+                                    "</div>" +
+                                    "<div class='form-check form-check-inline'>" +
+                                        "<input class='form-check-input' type='radio' name='estadoB' id='bloq' value='bloqueada'>" +
+                                        "<div id='blo'></div>" +
+                                    "</div>" + 
+                                "</div>" +  
+                            "</div>" +
+                        "</form>" +
+                        "<div class='modal-footer d-flex justify-content-center'>" +
+                            "<div>" +
+                                "<input type='button' id='regPel' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div id='errorDiv1' style='width:70%; margin: auto;'></div>" +
+                    "</div>" +
+                "</div>" +
+            "</div>");
+}*/
+  
+  $(loaded);  
