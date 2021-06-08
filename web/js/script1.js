@@ -66,7 +66,7 @@ function renderCheckin(){
     $("#nombre").val(usuario.nombre);
     $("#cedula").val(usuario.cedula);
     $("#password").val(usuario.clave);
-    $('#aplicar2').on('click', login);
+    $('#aplicar2').on('click', checkin);
     $("#add-modal-checkin #errorDiv2").html("");     
     $('#add-modal-checkin').modal('show');
 }
@@ -84,12 +84,14 @@ function validarLogin(){
   function validarCheckin(){
     var error = false;
     $("#formulario2 input").removeClass("invalid");
-    error |= $("#formulario2 input[type='text'], formulario input[type='password]").filter( (i,e)=>{ return e.value=='';}).length>0;        
-    $("#formulario2 input[type='text'], formulario input[type='password]").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
-    error |= ($("#formulario2 input[type='password'].contra1") != $("#formulario2 input[type='password'].contra2"));
-    if($("#formulario2 input[type='password'].contra2") != $("#formulario2 input[type='password'].contraverificar2")){
-        $("#formulario2 input[type='password', id='contra2']").addClass("invalid");
-        $("#formulario2 input[type='password', id='contraverificar2']").addClass("invalid");
+    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;       
+    $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= $("#formulario2 input[type='password']").filter( (i,e)=>{ return e.value=='';}).length > 0;       
+    $("#formulario2 input[type='password']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");  
+    error |= ($("#formulario2 input[id='contra2']").val() != $("#formulario2 input[id='contraverificar2']").val());
+    if($("#formulario2 input[id='contra2']").val() != $("#formulario2 input[id='contraverificar2']").val()){
+        $("#formulario2 input[id='contra2']").addClass("invalid");
+        $("#formulario2 input[id='contraverificar2']").addClass("invalid");
     }
     return !error;
   }
@@ -168,7 +170,7 @@ function loadCheckin(){
                         "<div class='modal-header'>" +
                             "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
                         "</div>" +
-                        "<form id='formulariocheckin'>" +
+                        "<form id='formulario2'>" +
                             "<div class='modal-body'>" +
                                 "<div id='div-login-msg'>" +
                                     "<div id='icon-login-msg'></div>" +
@@ -176,20 +178,20 @@ function loadCheckin(){
                                 "</div>" +
                                 "<br>" +
                                 "<div class='form-group'>" +
-                                    "<label for='nombre'>Cédula</label>" +
+                                    "<label for='nombre'>Nombre</label>" +
                                     "<input type='text' class='form-control' name='nombre' id='nombre2' placeholder='Nombre'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='cedula'>Cédula</label>" +
-                                    "<input type='text' class='form-control' name='cedula' id='cedula2' placeholder='Cedula'>" +
+                                    "<input type='text' class='form-control' name='cedula' id='cedula2' placeholder='Cédula'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='contra1'>Contraseña</label>" +
-                                    "<input type='password' class='form-control' name='contra1' id='contra2' placeholder='Contraseña'>" +
+                                    "<input type='password' class='form-control' name='clave' id='contra2' placeholder='Contraseña'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='contra2'>Contraseña</label>" +
-                                    "<input type='password' class='form-control' name='contra2' id='contraverificar2' placeholder='Verifique su contraseña'>" +
+                                    "<input type='password' class='form-control' name='claveverificar' id='contraverificar2' placeholder='Verifique su contraseña'>" +
                                 "</div>" +
                             "</div>" +
                         "</form>" +
@@ -209,12 +211,35 @@ function signoff(){
     location.href = "/Cine";
 }
 
+function checkin(){
+    usuario.nombre = $('#formulario2 input[id=nombre2]').val();
+    usuario.clave = $('#formulario2 input[id=contra2]').val();
+    usuario.id = $('#formulario2 input[id=cedula2]').val();
+    usuario.rol = "cliente";
+    if(!validarCheckin()) return;
+    let request = new Request(url + "api/sesiones/registrarse",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(usuario)});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {
+            errorMessage(response.status,$("#add-modal-checkin #errorDiv2"));
+            return;
+        }
+        reset();
+        $("#add-modal-checkin #errorDiv2").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha registrado con éxito'+'</div>');               
+    })();
+}
+
 function errorMessage(status,place){  
     var error;
     switch(status){
         case 404: error= "Registro no encontrado"; break;
         case 403: case 405: error = "Usuario no autorizado"; break;
-        case 406: case 405: error = "Error de autentificación"; break;
+        case 406: case 405: error = "Error de autenticación"; break;
         default: error = "Error interno"; break;
     };            
     place.html('<div class="alert alert-danger fade show">' +

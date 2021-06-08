@@ -32,4 +32,16 @@ public class Sesiones {
             throw new NotAcceptableException(); 
         }
     }
+    
+    @POST
+    @Path("registrarse")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void add(Usuario u){
+        try{
+            Service.instancia().agregarUsuario(u);
+        }
+        catch(Exception ex){
+            throw new NotAcceptableException();
+        }
+    }
 }

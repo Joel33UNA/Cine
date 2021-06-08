@@ -67,7 +67,7 @@ public class UsuarioDAO {
         }
         String sql2;
         switch(u.getRol()){
-            case "cliente": { sql2 = "insert into clientes values ('%s')"; break; }
+            case "cliente": { sql2 = "insert into clientes (id) values ('%s')"; break; }
             case "administrador": { sql2 = "insert into administradores values ('%s')"; break; }
             default: { sql2 = ""; break; }
         }
