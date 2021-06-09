@@ -1,3 +1,11 @@
+/*
+UNIVERSIDAD NACIONAL DE COSTA RICA
+EIF-209  -  PROGRAMACIÓN IV
+PROYECTO II
+ESTUDIANTE: JOEL ZAMORA Y DIEGO JIMÉNEZ
+PROFESOR: JOSE SÁNCHEZ SALAZAR
+*/
+
 var usuarios = new Array();
 var usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" };
 

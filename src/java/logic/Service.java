@@ -61,6 +61,11 @@ public class Service {
         List<Usuario> filtro = usuarios.filtrarUsuarios(nombre);
         return filtro;
     }
+    
+    public List<Sala> getSalas() throws Exception{
+        List<Sala> filtro = salas.readAll();
+        return filtro;
+    }
 
     public Proyeccion proyecEspec(int id) throws Exception {
         Proyeccion proyeccion = proyecciones.readProyeccion(id);

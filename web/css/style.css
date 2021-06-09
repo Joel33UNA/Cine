@@ -84,6 +84,26 @@ border-top-right-radius: 10px;
 
 input.invalid {box-shadow: 0 0 1px 1px red;}
 
+#botonsala{
+    
+}
+
+#botones{
+    padding: 1.5rem;
+    margin-right: 0;
+    margin-left: 0;
+    border-width: .2rem;
+}
+
+footer{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8eac9;
+  text-align: center;
+}
+
 .main-logo{
     width:90%;
     max-width: 150px;
@@ -187,15 +207,9 @@ p.text span {
     color: #6feaf6;
 }
 
-
 .status{
     color:white;
 }
-
-/*.nav-link{
-    color: white !important;
-    font-weight: 500 !important;
-}*/
 
 .btn-home{
     background-color: #E50914;
