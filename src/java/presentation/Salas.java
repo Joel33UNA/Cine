@@ -9,9 +9,11 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 package presentation;
 
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -29,6 +31,16 @@ public class Salas {
             return Service.instancia().getSalas();
         }
         catch(Exception ex){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON) 
+    public void add(Sala s) {  
+        try {
+            Service.instancia().agregarSala(s);
+        } catch (Exception ex) {
             throw new NotAcceptableException(); 
         }
     }

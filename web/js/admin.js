@@ -7,6 +7,7 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 */
 
 var salas = new Array();
+var sala = { filas: 0, columnas:0, nombre:"" };
 
 var url = "http://localhost:8080/Cine/";
 
@@ -14,50 +15,53 @@ async function listRooms(){
     let request = new Request(url+'api/salas', {method: 'GET', headers: { }});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    salas = await response.json(); 
-    showAddRoom();
+    salas = await response.json();
+    renderRooms();
+    
 }
 
-function showAddRoom(){
+function renderRooms(){
    var div = $("#body");
    div.html("");
-   div.html("<div id='botones'>" +
-                "<div class='dropdown'>" +
-                    "<button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                        "Columnas" +
-                    "</button>" +
-                    "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>" +
-                        "<a class='dropdown-item' href='#'>1</a>" +
-                        "<a class='dropdown-item' href='#'>2</a>" +
-                        "<a class='dropdown-item' href'#'>3</a>" +
-                        "<a class='dropdown-item' href'#'>4</a>" +
-                        "<a class='dropdown-item' href'#'>5</a>" +
-                        "<a class='dropdown-item' href'#'>6</a>" +
-                        "<a class='dropdown-item' href'#'>7</a>" +
-                        "<a class='dropdown-item' href'#'>8</a>" +
-                    "</div>" +
+   div.html(
+           "<div class='select'>" +
+                "<select id='filas'>" +
+                    "<option value=''>Filas:</option>" +
+                    "<option value='1' type='number'>1</option>" +
+                    "<option value='2' type='number'>2</option>" +
+                    "<option value='3' type='number'>3</option>" +
+                    "<option value='4' type='number'>4</option>" +
+                    "<option value='5' type='number'>5</option>" +
+                    "<option value='6' type='number'>6</option>" +
+                    "<option value='7' type='number'>7</option>" +
+                    "<option value='8' type='number'>8</option>" +
+                "</select>" +
+            "</div>" +
+            "<div class='select'>" +
+                "<select id='columnas'>" +
+                    "<option value=''>Columnas:</option>" +
+                    "<option value='1' type='number'>1</option>" +
+                    "<option value='2' type='number'>2</option>" +
+                    "<option value='3' type='number'>3</option>" +
+                    "<option value='4' type='number'>4</option>" +
+                    "<option value='5' type='number'>5</option>" +
+                    "<option value='6' type='number'>6</option>" +
+                    "<option value='7' type='number'>7</option>" +
+                    "<option value='8' type='number'>8</option>" +
+                "</select>" +
+            "</div>" +
+            "<div class='input-group mb-3'>" +
+                "<div class='input-group-prepend'>" +
+                    "<span class='input-group-text' id='basic-addon1'>Nombre de la sala:</span>" +
                 "</div>" +
-                "<div class='dropdown'>" +
-                     "<button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                         "Filas" +
-                     "</button>" +
-                     "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>" +
-                         "<a class='dropdown-item' href='#'>1</a>" +
-                         "<a class='dropdown-item' href='#'>2</a>" +
-                         "<a class='dropdown-item' href'#'>3</a>" +
-                         "<a class='dropdown-item' href'#'>4</a>" +
-                         "<a class='dropdown-item' href'#'>5</a>" +
-                         "<a class='dropdown-item' href'#'>6</a>" +
-                         "<a class='dropdown-item' href'#'>7</a>" +
-                         "<a class='dropdown-item' href'#'>8</a>" +
-                     "</div>" +
-                "</div>" +
-                "<button type='button' class='btn btn-secondary btn-lg' id='botonsala'>Agregar sala</button>" +
-           "</div>" +
+                "<input type='text' class='form-control' placeholder='Sala' aria-label='sala' aria-describedby='basic-addon1' id='nombresala'>" +
+            "</div>" +
+           "<button type='button' class='btn btn-secondary' id='botonsala'>Agregar sala</button>" +
            "<table class='table table-striped' id='tablasalas'>" +
                 "<thead>" +
                     "<tr>" +
                         "<th scope='col'>ID Sala</th>" +
+                        "<th scope='col'>Nombre</th>" +
                         "<th scope='col'>Número de butacas</th>" +
                     "</tr>" +
                 "</thead>" +
@@ -67,14 +71,46 @@ function showAddRoom(){
     salas.forEach(function(sala){
         var tr = $("<tr />");
         tr.html("<td>" + sala.id + "</td>" +
+                "<td>" + sala.nombre + "</td>" +
                 "<td>" + sala.butacas.length + "</td>");
         tbody.append(tr);
-    })
+    });
+    $("#addroom").click(renderRooms);
+    $("#botonsala").click(addRoom);
 }
 
-function loaded(){
+function validarAddRoom(){
+    var error = false;
+    $(".select select").removeClass("invalid");
+    error |= $("#nombresala").filter( (i,e)=>{ return e.value=='';}).length > 0;
+    $("#nombresala").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= !Number.isInteger(Number.parseInt($('#filas').val()));
+    if(!Number.isInteger(Number.parseInt($('#filas').val()))){
+        Number.isInteger(Number.parseInt($('#filas').addClass("invalid")));
+    }
+    error |= !Number.isInteger(Number.parseInt($('#columnas').val())); 
+    if(!Number.isInteger(Number.parseInt($('#columnas').val()))){
+        Number.isInteger(Number.parseInt($('#columnas').addClass("invalid"))); 
+    }
+    return !error;
+}
+
+async function addRoom(){
+    sala.filas = Number.parseInt($('#filas').val());
+    sala.columnas = Number.parseInt($('#columnas').val());
+    sala.nombre = $('#nombresala').val();
+    if(!validarAddRoom()) return;
+    let request = new Request(url + "api/salas",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(sala)});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
     listRooms();
-    $("#addroom").click(showAddRoom);
+}
+
+function loaded(){ /* async00*/
+    listRooms();
 }
 
 $(loaded); 

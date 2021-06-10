@@ -47,6 +47,16 @@ public class Service {
         usuarios.add(u);
     }
     
+    public void agregarSala(Sala s) throws Exception{
+        salas.add(s);
+        Sala salaRecuperada = salas.readSala(s.getNombre());
+        for(int i = 0; i < salaRecuperada.getColumnas() * salaRecuperada.getFilas(); i++){
+            Butaca butaca = new Butaca(i + 1, null, salaRecuperada);
+            s.addButaca(butaca);
+            butacas.add(butaca);
+        }
+    }
+    
     public Usuario buscarUsuario(String id) throws Exception{
         Usuario usuario = usuarios.readUsuario(id);
         return usuario;

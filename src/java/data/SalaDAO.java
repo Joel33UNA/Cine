@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import logic.Butaca;
 import logic.Sala;
 
 public class SalaDAO {
@@ -28,7 +31,20 @@ public class SalaDAO {
         return sa;
     }
     
-    public Sala readSala(int id) throws Exception{
+    public Sala readSala(String nombre) throws Exception{
+        String sql = "select* from salas where nombre='%s'";
+        sql = String.format(sql, nombre);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        if(rs.next()){
+            return from(rs);
+        }
+        else{
+            return null;
+        }
+    }
+    
+    public Sala readSalaById(int id) throws Exception{
         String sql = "select* from salas where id=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -41,12 +57,50 @@ public class SalaDAO {
         }
     }
     
+    public void add(Sala s) throws Exception{
+        String sql1 = "insert into salas (filas, columnas, nombre) values (%s ,%s, '%s')";
+        sql1 = String.format(sql1, s.getFilas(), s.getColumnas(), s.getNombre());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql1);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception();
+        }
+    }
+    
+    public List<Butaca> readButacas(int id) throws Exception{
+        List<Butaca> bu = new ArrayList<>();
+        String sql = "select* from butacas where id_sala=%s";
+        sql = String.format(sql, id);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        while(rs.next()){
+            bu.add(fromButaca(rs));
+        }
+        return bu;
+    }
+    
     public Sala from (ResultSet rs){
         try {
             Sala r = new Sala();
             r.setId(rs.getInt("id"));
             r.setFilas(rs.getInt("filas"));
             r.setColumnas(rs.getInt("columnas"));
+            r.setNombre(rs.getString("nombre"));
+            r.setButacas(readButacas(r.getId()));
+            return r;
+        } catch (SQLException ex) {
+            return null;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    public Butaca fromButaca (ResultSet rs) throws Exception{
+        try {
+            Sala s = new Sala();
+            Butaca r = new Butaca();
+            r.setId(rs.getInt("id"));
+            r.setEstado(rs.getString("estado"));
+            r.setSala(s);
             return r;
         } catch (SQLException ex) {
             return null;
