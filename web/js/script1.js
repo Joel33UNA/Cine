@@ -1,3 +1,4 @@
+
 var usuarios = new Array();
 var usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" };
 
@@ -66,7 +67,7 @@ function renderCheckin(){
     $("#nombre").val(usuario.nombre);
     $("#cedula").val(usuario.cedula);
     $("#password").val(usuario.clave);
-    $('#aplicar2').on('click', login);
+    $('#aplicar2').on('click', checkin);
     $("#add-modal-checkin #errorDiv2").html("");     
     $('#add-modal-checkin').modal('show');
 }
@@ -84,12 +85,14 @@ function validarLogin(){
   function validarCheckin(){
     var error = false;
     $("#formulario2 input").removeClass("invalid");
-    error |= $("#formulario2 input[type='text'], formulario input[type='password]").filter( (i,e)=>{ return e.value=='';}).length>0;        
-    $("#formulario2 input[type='text'], formulario input[type='password]").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
-    error |= ($("#formulario2 input[type='password'].contra1") != $("#formulario2 input[type='password'].contra2"));
-    if($("#formulario2 input[type='password'].contra2") != $("#formulario2 input[type='password'].contraverificar2")){
-        $("#formulario2 input[type='password', id='contra2']").addClass("invalid");
-        $("#formulario2 input[type='password', id='contraverificar2']").addClass("invalid");
+    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;       
+    $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= $("#formulario2 input[type='password']").filter( (i,e)=>{ return e.value=='';}).length > 0;       
+    $("#formulario2 input[type='password']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");  
+    error |= ($("#formulario2 input[id='contra2']").val() != $("#formulario2 input[id='contraverificar2']").val());
+    if($("#formulario2 input[id='contra2']").val() != $("#formulario2 input[id='contraverificar2']").val()){
+        $("#formulario2 input[id='contra2']").addClass("invalid");
+        $("#formulario2 input[id='contraverificar2']").addClass("invalid");
     }
     return !error;
   }
@@ -116,7 +119,7 @@ function list(){
 
 function showLogin(){
     reset();
-    renderLogin()
+    renderLogin();
 }
 
 function loadLogin(){
@@ -168,7 +171,7 @@ function loadCheckin(){
                         "<div class='modal-header'>" +
                             "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
                         "</div>" +
-                        "<form id='formulariocheckin'>" +
+                        "<form id='formulario2'>" +
                             "<div class='modal-body'>" +
                                 "<div id='div-login-msg'>" +
                                     "<div id='icon-login-msg'></div>" +
@@ -176,7 +179,7 @@ function loadCheckin(){
                                 "</div>" +
                                 "<br>" +
                                 "<div class='form-group'>" +
-                                    "<label for='nombre'>Cédula</label>" +
+                                    "<label for='nombre'>Nombre</label>" +
                                     "<input type='text' class='form-control' name='nombre' id='nombre2' placeholder='Nombre'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
@@ -185,11 +188,11 @@ function loadCheckin(){
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='contra1'>Contraseña</label>" +
-                                    "<input type='password' class='form-control' name='contra1' id='contra2' placeholder='Contraseña'>" +
+                                    "<input type='password' class='form-control' name='clave' id='contra2' placeholder='Contraseña'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='contra2'>Contraseña</label>" +
-                                    "<input type='password' class='form-control' name='contra2' id='contraverificar2' placeholder='Verifique su contraseña'>" +
+                                    "<input type='password' class='form-control' name='claveverificar' id='contraverificar2' placeholder='Verifique su contraseña'>" +
                                 "</div>" +
                             "</div>" +
                         "</form>" +
@@ -209,12 +212,35 @@ function signoff(){
     location.href = "/Cine";
 }
 
+function checkin(){
+    usuario.nombre = $('#formulario2 input[id=nombre2]').val();
+    usuario.clave = $('#formulario2 input[id=contra2]').val();
+    usuario.id = $('#formulario2 input[id=cedula2]').val();
+    usuario.rol = "cliente";
+    if(!validarCheckin()) return;
+    let request = new Request(url + "api/sesiones/registrarse",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(usuario)});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {
+            errorMessage(response.status,$("#add-modal-checkin #errorDiv2"));
+            return;
+        }
+        reset();
+        $("#add-modal-checkin #errorDiv2").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha registrado con éxito'+'</div>');               
+    })();
+}
+
 function errorMessage(status,place){  
     var error;
     switch(status){
         case 404: error= "Registro no encontrado"; break;
         case 403: case 405: error = "Usuario no autorizado"; break;
-        case 406: case 405: error = "Error de autentificación"; break;
+        case 406: case 405: error = "Error de autenticación"; break;
         default: error = "Error interno"; break;
     };            
     place.html('<div class="alert alert-danger fade show">' +
@@ -236,193 +262,4 @@ function loaded(){
     $("#signoff").click(signoff);
 }
 
-
-//======================================================================================================================================
-//======================================================================================================================================
-//======================================================================================================================================
-//======================================================================================================================================
-
-
-/*
-
-  var peliculas = new Array();
-  var pelicula ={id:0,nombre:"",estado:""};
-  var mode='A'; //adding
-
-
-  function render(){
-	$("#id").val(pelicula.id);
-	$("#nombre").val(pelicula.nombre);
-        $("input[name='estado']").val([pelicula.estado]);
-        switch(mode){
-            case 'A':
-                $("#cedula" ).prop( "readonly", false );
-                $('#aplicar').off('click').on('click', add);
-                break;
-            case 'E':
-                $("#cedula" ).prop( "readonly", true );
-                $('#aplicar').off('click').on('click', update);
-                break;             
-        }
-        $("#add-modal #errorDiv").html("");
-        $("#add-modal #imagen").val("");        
-        $('#add-modal').modal('show');        
-  }
-  
-    function load(){
-        persona = Object.fromEntries( (new FormData($("#formulario").get(0))).entries());       
-    }
-    
-    function reset(){
-        persona={cedula:"", nombre:"",sexo:""}; 
-    }    
- 
-  function add(){
-    load();
-    if(!validar()) return;
-    let request = new Request(url+'api/personas', {method: 'POST', headers: { 'Content-Type': 'application/json'},body: JSON.stringify(persona)});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}
-        addImagen();
-        fetchAndList();
-        reset();
-        $('#add-modal').modal('hide');                
-    })();    
-  }
-  
-  function addImagen(){
-    var imagenData = new FormData();
-    imagenData.append("cedula", persona.cedula);
-    imagenData.append("imagen", $("#imagen").get(0).files[0]); 
-    let request = new Request(url+'api/personas/'+persona.cedula+"/imagen", {method: 'POST',body: imagenData});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}              
-    })();    
-  }
-  
-  function update(){
-    load();
-    if(!validar()) return;
-    let request = new Request(url+'api/personas', {method: 'PUT', headers: { 'Content-Type': 'application/json'},body: JSON.stringify(persona)});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}
-        fetchAndList();
-        reset();
-        $('#add-modal').modal('hide');                
-    })();     
-  }
-  
-  function validar(){
-    var error=false;
-   $("#formulario input").removeClass("invalid");
-    error |= $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
-    $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
-    error |= $("input[name='sexo']:checked").length==0;
-    if ( $("input[name='sexo']:checked").length==0) $("#formulario input[name='sexo']").addClass("invalid");
-    return !error;
-  }
-
-  function list(){
-    $("#listado").html("");
-    personas.forEach( (p)=>{row($("#listado"),p);});	
-  }  
-  
-  function row(listado,persona){
-	var tr =$("<tr />");
-	tr.html("<td>"+persona.cedula+"</td>"+
-                "<td>"+persona.nombre+"</td>"+
-                "<td><img src='images/"+persona.sexo+".png' class='icon' ></td>"+
-                "<td><img src='"+url+"api/personas/"+persona.cedula+"/imagen' class='icon_large' ></td>"+                
-                "<td id='edit'><img src='images/edit.png'></td>");
-        tr.find("#edit").on("click",()=>{edit(persona.cedula);});
-	listado.append(tr);           
-  }
-  
-  function edit(cedula){
-    let request = new Request(url+'api/personas/'+cedula, {method: 'GET', headers: { }});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#buscarDiv #errorDiv"));return;}
-        persona = await response.json();
-        mode='E'; //editing
-        render();        
-    })();         
-  }
-  
-  function makenew(){
-      reset();
-      mode='A'; //adding
-      render();
-    }
-    
-  function search(){
-      //to do
-  }
-
-  function fetchAndList(){
-    let request = new Request(url+'api/personas', {method: 'GET', headers: { }});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#buscarDiv #errorDiv"));return;}
-        personas = await response.json();
-        list();              
-    })();    
-  } 
-  
-  function loaded(){
-    fetchAndList();
-    $("#crear").click(makenew);        
-    $("#buscar").on("click",search);
-  }
-  
-  function loadIngresoPeli(){
-    var div = $("#popupRegistroPelis");
-    div.html("<div class='modal fade' id='add-modal-login' tabindex='-1' role'dialog'>" +
-                "<div class='modal-dialog' style='width: 400px'>" +
-                    "<div class='modal-content'>" +
-                        "<div class='modal-header'>" +
-                            "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
-                        "</div>" +
-                        "<form id='formulario1'>" +
-                            "<div class='modal-body'>" +
-                                "<div id='div-login-msg'>" +
-                                    "<div id='icon-login-msg'></div>" +
-                                    "<span id='text-login-msg'>Registrar Película</span>" +
-                                "</div>" +
-                                "<br>" +
-                                "<div class='form-group'>" +
-                                    "<label for='nombre'>Nombre</label>" +
-                                    "<input type='text' class='form-control' name='nombre' id='nombre3' placeholder='Nombre'>" +
-                                "</div>" +
-                                "<div class='form-group'>" +
-                                    "<label for='precio'>Precio</label>" +
-                                    "<input type='text' class='form-control' name='precio1' id='precio1' placeholder='Precio'>" +
-                                "</div>" +
-                                "<div class='form-group'>" +
-                                    "<label for='estado'>Estado</label>" +
-                                    "<div class='form-check form-check-inline'>" +
-                                        "<input class='form-check-input' type='radio' name='estadoC' id='cartelera' value='en cartelera'>" +
-                                        "<div id='carte'></div>" +
-                                    "</div>" +
-                                    "<div class='form-check form-check-inline'>" +
-                                        "<input class='form-check-input' type='radio' name='estadoB' id='bloq' value='bloqueada'>" +
-                                        "<div id='blo'></div>" +
-                                    "</div>" + 
-                                "</div>" +  
-                            "</div>" +
-                        "</form>" +
-                        "<div class='modal-footer d-flex justify-content-center'>" +
-                            "<div>" +
-                                "<input type='button' id='regPel' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
-                            "</div>" +
-                        "</div>" +
-                        "<div id='errorDiv1' style='width:70%; margin: auto;'></div>" +
-                    "</div>" +
-                "</div>" +
-            "</div>");
-}*/
-  
-  $(loaded);  
+$(loaded); 

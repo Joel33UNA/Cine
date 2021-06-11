@@ -86,7 +86,8 @@ public class Peliculas {
     }
 
     
-        @POST
+    @POST
+    @Path("agregar")
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Pelicula p) {  
         try {
@@ -98,6 +99,7 @@ public class Peliculas {
     
     
     @PUT
+    @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)
     public void update(Pelicula p) {  
         try {
