@@ -34,7 +34,9 @@ create table salas(
     id int not null AUTO_INCREMENT,
     filas int,
     columnas int,
-    primary key(id)
+    nombre varchar(45),
+    primary key(id),
+    UNIQUE KEY(nombre)
 );
 
 create table butacas(

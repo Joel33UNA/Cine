@@ -16,19 +16,22 @@ public class Sala {
     private int id;
     private int filas;
     private int columnas;
+    private String nombre;
     private List<Butaca> butacas;
     
     public Sala(){
         this.id = 0;
         this.filas = 0;
         this.columnas = 0;
+        this.nombre = "";
         this.butacas = new ArrayList<>();
     }
 
-    public Sala(int id, int filas, int columnas, List<Butaca> butacas) {
+    public Sala(int id, int filas, int columnas, String nombre, List<Butaca> butacas) {
         this.id = id;
         this.filas = filas;
         this.columnas = columnas;
+        this.nombre = nombre;
         this.butacas = butacas;
     }
 
@@ -56,12 +59,24 @@ public class Sala {
         this.id = id;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public List<Butaca> getButacas() {
         return butacas;
     }
 
     public void setButacas(List<Butaca> butacas) {
         this.butacas = butacas;
+    }
+    
+    public void addButaca(Butaca butaca){
+        this.butacas.add(butaca);
     }
 
     @Override

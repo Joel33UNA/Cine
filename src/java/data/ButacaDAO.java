@@ -20,8 +20,8 @@ public class ButacaDAO {
     
     public void add(Butaca b) throws Exception{
         String sql = "insert into butacas (id, id_sala, estado)"
-                + "values ('%s', '%s', '%s')";
-        sql = String.format(sql, b.getId(), b.getSala().getId(), b.getEstado());
+                + " values (%s, %s, %s)";
+        sql = String.format(sql, b.getId(), b.getSala().getId(), "null");
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Butaca ya existe");
