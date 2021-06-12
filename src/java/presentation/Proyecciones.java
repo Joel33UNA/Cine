@@ -41,13 +41,24 @@ public class Proyecciones {
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Proyeccion> search(@DefaultValue("") @QueryParam("nombre") String pelicula) { 
+    public List<Proyeccion> todas() { 
         try {
-            return Service.instancia().proyecsPeli(pelicula);
+            return Service.instancia().todas();
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    } 
+    }
+    
+    @GET
+    @Path("{nombre}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Proyeccion> search(@PathParam("nombre") String nombre) {
+        try {
+            return Service.instancia().proyecsPeli(nombre);
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    }
     
     @GET
     @Path("{id}")

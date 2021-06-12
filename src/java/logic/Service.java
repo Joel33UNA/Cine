@@ -98,6 +98,11 @@ public class Service {
         }
         return filtro;
     }
+    
+    public List<Proyeccion> todas() throws Exception {
+        List<Proyeccion> todas = proyecciones.readAll();
+        return todas;
+    }
 
     public void proyeccionAdd(Proyeccion p) throws Exception {
         proyecciones.add(p); 
