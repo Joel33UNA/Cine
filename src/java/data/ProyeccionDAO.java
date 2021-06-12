@@ -20,9 +20,9 @@ import logic.Sala;
 public class ProyeccionDAO {
     
     public void add(Proyeccion p) throws Exception{
-        String sql = "insert into proyecciones (id, id_sala, id_pelicula, fecha)"
-                + "values ('%s', '%s', '%s', '%s')";
-        sql = String.format(sql, p.getId(), p.getSala().getId(), p.getPelicula().getId(), p.getFecha());
+        String sql = "insert into proyecciones (id_sala, id_pelicula, fecha, precio)"
+                + "values (%s, %s, '%s', %s)";
+        sql = String.format(sql, p.getSala().getId(), p.getPelicula().getId(), p.getFecha(), p.getPrecio());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Proyeccion ya existe");
@@ -85,6 +85,7 @@ public class ProyeccionDAO {
             Sala s = new Sala();
             Pelicula p = new Pelicula();
             r.setId(rs.getInt("id"));
+            r.setPrecio(rs.getDouble("precio"));
             s = readSala(rs.getInt("id_sala"));
             p = readPelicula(rs.getInt("id_pelicula"));
             r.setFecha(rs.getString("fecha")); 
@@ -102,6 +103,7 @@ public class ProyeccionDAO {
             r.setId(rs.getInt("id"));
             r.setFilas(rs.getInt("filas"));
             r.setColumnas(rs.getInt("columnas"));
+            r.setNombre(rs.getString("nombre"));
             return r;
         } catch (SQLException ex) {
             return null;
@@ -114,7 +116,6 @@ public class ProyeccionDAO {
             r.setId(rs.getInt("id"));
             r.setNombre(rs.getString("nombre"));
             r.setEstado(rs.getString("estado"));
-            r.setPrecio(rs.getInt("precio"));
             return r;
         } catch (SQLException ex) {
             return null;

@@ -41,9 +41,9 @@ public class Proyecciones {
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Proyeccion> todas() { 
+    public List<Proyeccion> getAll() { 
         try {
-            return Service.instancia().todas();
+            return Service.instancia().proyecsTodas();
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
@@ -80,35 +80,4 @@ public class Proyecciones {
             throw new NotAcceptableException(); 
         }
     }
-    
-    
-    //*******************PROYECCION NO TIENE IMAGEN
-    /*
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA) 
-    @Path("{cedula}/imagen")
-    public void addImage(@PathParam("nombre") String nombre, @FormDataParam("imagen") InputStream imagenStream) {  
-        try{
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            OutputStream out = new FileOutputStream(new File(location + nombre));
-            while ((read = imagenStream.read(bytes)) != -1){
-                out.write(bytes, 0, read);
-            }
-            out.flush();
-            out.close();
-        } catch (Exception ex) {
-            throw new NotAcceptableException(); 
-        }
-    }
-    
-    @GET
-    @Path("{nombre}/imagen")
-    @Produces("image/png")
-    public Response getImge(@PathParam("nombre") String nombre) throws IOException {
-        File file = new File(location+nombre);
-        Response.ResponseBuilder response = Response.ok((Object) file);
-        return response.build();
-    }
-    */ 
 }

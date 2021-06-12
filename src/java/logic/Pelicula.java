@@ -16,14 +16,12 @@ public class Pelicula {
     private int id;
     private String nombre;
     private String estado;
-    private int precio;
     private List<Proyeccion> proyecciones;
     
     public Pelicula(){
         this.id = 0;
         this.nombre = "";
         this.estado = "";
-        this.precio = 0;
         this.proyecciones = new ArrayList<>();
     }
 
@@ -31,7 +29,6 @@ public class Pelicula {
         this.id = id;
         this.nombre = nombre;
         this.estado = estado;
-        this.precio = precio;
         this.proyecciones = new ArrayList<>();
     }
 
@@ -45,14 +42,6 @@ public class Pelicula {
 
     public int getId() {
         return id;
-    }
-
-    public int getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(int precio) {
-        this.precio = precio;
     }
     
     public void setId(int id) {

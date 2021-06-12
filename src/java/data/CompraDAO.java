@@ -22,8 +22,8 @@ import logic.Sala;
 public class CompraDAO {
     
     public void add(Compra c) throws Exception{
-        String sql = "insert into compras (id, id_cli, id_pro)"
-                + "values ('%s', '%s', '%s')";
+        String sql = "insert into compras (id, id_cli, id_pro, precio_total)"
+                + "values (%s, '%s', %s, %s)";
         sql = String.format(sql, c.getId(), c.getCliente().getId(), c.getProyeccion().getId());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
@@ -173,7 +173,6 @@ public class CompraDAO {
             r.setId(rs.getInt("id"));
             r.setNombre(rs.getString("nombre"));
             r.setEstado(rs.getString("estado"));
-            r.setPrecio(rs.getInt("precio"));
             return r;
         } catch (SQLException ex) {
             return null;

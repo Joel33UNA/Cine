@@ -14,15 +14,18 @@ public class Compra {
     private int id;
     private Cliente cliente;
     private Proyeccion proyeccion;
+    private double precio_total;
     
     public Compra(){
         this.id = 0;
+        this.precio_total = 0;
         this.cliente = new Cliente();
         this.proyeccion = new Proyeccion();
     }
 
-    public Compra(int id, Cliente cliente, Proyeccion proyeccion) {
+    public Compra(int id, double precio_total, Cliente cliente, Proyeccion proyeccion) {
         this.id = id;
+        this.precio_total = precio_total;
         this.cliente = cliente;
         this.proyeccion = proyeccion;
     }
@@ -49,6 +52,14 @@ public class Compra {
 
     public void setProyeccion(Proyeccion proyeccion) {
         this.proyeccion = proyeccion;
+    }
+
+    public double getPrecio_total() {
+        return precio_total;
+    }
+
+    public void setPrecio_total(double precio_total) {
+        this.precio_total = precio_total;
     }
 
     @Override

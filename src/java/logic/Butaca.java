@@ -9,36 +9,36 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 package logic;
 
 public class Butaca {
-    private int id;
-    private String estado;
+    private int fila;
+    private int columna;
     private Sala sala;
     
     public Butaca(){
-        this.id = 0;
-        this.estado = "";
+        this.fila = 0;
+        this.columna = 0;
         this.sala = new Sala();
     }
 
-    public Butaca(int id, String estado, Sala sala) {
-        this.id = id;
-        this.estado = estado;
+    public Butaca(int fila, int columna, Sala sala) {
+        this.fila = fila;
+        this.columna = columna;
         this.sala = sala;
     }
 
-    public int getId() {
-        return id;
+    public int getFila() {
+        return fila;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setFila(int fila) {
+        this.fila = fila;
     }
 
-    public String getEstado() {
-        return estado;
+    public int getColumna() {
+        return columna;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setColumna(int columna) {
+        this.columna = columna;
     }
 
     public Sala getSala() {
