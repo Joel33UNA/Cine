@@ -98,8 +98,8 @@ public class SalaDAO {
         try {
             Sala s = new Sala();
             Butaca r = new Butaca();
-            r.setId(rs.getInt("id"));
-            r.setEstado(rs.getString("estado"));
+            r.setColumna(rs.getInt("columna"));
+            r.setFila(rs.getInt("fila"));
             r.setSala(s);
             return r;
         } catch (SQLException ex) {

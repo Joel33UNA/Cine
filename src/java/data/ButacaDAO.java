@@ -19,9 +19,9 @@ import logic.Sala;
 public class ButacaDAO {
     
     public void add(Butaca b) throws Exception{
-        String sql = "insert into butacas (id, id_sala, estado)"
+        String sql = "insert into butacas (id_sala, fila, columna)"
                 + " values (%s, %s, %s)";
-        sql = String.format(sql, b.getId(), b.getSala().getId(), "null");
+        sql = String.format(sql, b.getSala().getId(), b.getFila(), b.getColumna());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Butaca ya existe");
@@ -70,8 +70,8 @@ public class ButacaDAO {
             Sala s = new Sala();
             Butaca r = new Butaca();
             s = readSala(rs.getInt("id_sala"));
-            r.setId(rs.getInt("id"));
-            r.setEstado(rs.getString("estado"));
+            r.setFila(rs.getInt("fila"));
+            r.setColumna(rs.getInt("columna"));
             r.setSala(s);
             return r;
         } catch (SQLException ex) {
@@ -85,6 +85,7 @@ public class ButacaDAO {
             r.setId(rs.getInt("id"));
             r.setFilas(rs.getInt("filas"));
             r.setColumnas(rs.getInt("columnas"));
+            r.setNombre(rs.getString("nombre"));
             return r;
         } catch (SQLException ex) {
             return null;

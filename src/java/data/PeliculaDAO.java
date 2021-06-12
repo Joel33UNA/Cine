@@ -47,7 +47,6 @@ public class PeliculaDAO {
             r.setId(rs.getInt("id"));
             r.setNombre(rs.getString("nombre"));
             r.setEstado(rs.getString("estado"));
-            r.setPrecio(rs.getInt("precio"));
             return r;
         } catch (SQLException ex) {
             return null;
@@ -55,9 +54,9 @@ public class PeliculaDAO {
     }
 
     public void add(Pelicula p) throws Exception{
-        String sql = "insert into peliculas (id, nombre, estado, precio)"
-                + "values ('%s', '%s', '%s', '%s')";
-        sql = String.format(sql, p.getId(), p.getNombre(), p.getEstado(), p.getPrecio());
+        String sql = "insert into peliculas (nombre, estado)"
+                + "values ('%s', '%s')";
+        sql = String.format(sql, p.getNombre(), p.getEstado());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Pelicula ya existe");

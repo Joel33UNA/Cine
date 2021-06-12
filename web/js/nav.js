@@ -70,7 +70,7 @@ function navAdmin(){
             "<div class='collapse navbar-collapse' id='navbarSupportedContent'>" +
                 "<ul class='navbar-nav mr-auto'>" +
                     "<li class='nav-item'>" +
-                        "<a class='btn btn-light' href='#' role='button' id='addmovie'>Agregar Película</a>" +
+                        "<a class='btn btn-light' href='#' role='button' id='addmovie'>Registrar Película</a>" +
                     "</li>" +
                     "<li class='nav-item'>" +
                         "<a class='btn btn-light' href='#' role='button' id='addroom'>Registrar Salas</a>" +

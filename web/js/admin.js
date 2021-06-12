@@ -10,13 +10,20 @@ var salas = new Array();
 var sala = { filas: 0, columnas:0, nombre:"" };
 
 var peliculas = new Array();
-var pelicula ={id:0,nombre:"",estado:"",precio:0};
+var pelicula ={ id:0, nombre:"", estado:"" };
 var mode='A'; //adding
+
+var proyecciones = new Array();
+var proyeccion = {id:0, sala:null, pelicula:null, fecha:"", precio:0 };
 
 var url = "http://localhost:8080/Cine/";
 
 function resetMovies(){
-    pelicula = { id:0, nombre:"", precio:0, estado:""}; 
+    pelicula = { id:0, nombre:"", estado:"" };
+}
+
+function resetShows(){
+    proyeccion = {id:0, sala:null, pelicula:null, fecha:"", precio:0 };
 }
 
 function load(){
@@ -31,11 +38,28 @@ async function listRooms(){
     renderRooms();
 }
 
-function listMovies(){
+async function listMovies(){
+    let request = new Request(url+'api/peliculas', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
+    peliculas = await response.json();
     $("#body").html("");
-    //var divPel = $("<div />", {"id":"movies"});
-    peliculas.forEach((p)=>{listarMovies($("#body"),p);});	
-}  
+    var div = $("<div />");
+    div.html("<button type='button' class='btn btn-secondary' id='botonaddmovie'>Agregar película</button>");
+    var div2 = $("<div />", {"id":"movies", class:"grid-container"});
+    $("#body").append(div);
+    $("#body").append(div2);
+    peliculas.forEach((p)=>{listarMovies($("#movies"),p);});
+    $("#botonaddmovie").click(showIngresoPelis);
+}
+
+async function listShow(){
+    let request = new Request(url+'api/proyecciones', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    proyecciones = await response.json();
+    renderShow();
+}
   
 function listarMovies(listado, movie){
     var div = $("<div />", {"class":"father"});
@@ -47,13 +71,20 @@ function listarMovies(listado, movie){
 }
 
 function renderMovies(){
-    $("#nombre").val(pelicula.nombre);
-    $("#precio").val(pelicula.precio);
+    $("#nombrepeli").val(pelicula.nombre);
     $("input[name='estado']").val([pelicula.estado]);
-    $('#regPel').off('click').on('click', registraPeli);
+    $('#botonproyeccion').off('click').on('click', addShow);
     $("#add-modal #errorDiv").html("");
     $("#add-modal #imagen").val("");        
     $('#add-modal').modal('show');        
+}
+
+function renderShows(){
+    $("#nombreshow").val(pelicula.nombre);
+    $("input[name='estado']").val([pelicula.estado]);
+    $('#regPel').off('click').on('click', addShow);
+    $("#add-modal-show #errorDiv").html("");       
+    $('#add-modal-show').modal('show');
 }
 
 function renderRooms(){
@@ -114,9 +145,37 @@ function renderRooms(){
     $("#addroom").click(renderRooms);
     $("#botonsala").click(addRoom);
 }
+function renderShow(){
+    var div = $("#body");
+    div.html("");
+    div.html("<button type='button' class='btn btn-secondary' id='botonproyeccion'>Agregar proyección</button>" +
+            "<table class='table table-striped' id='tablaproyecciones'>" +
+                "<thead>" +
+                    "<tr>" +
+                        "<th scope='col'>ID</th>" +
+                        "<th scope='col'>Nombre</th>" +
+                        "<th scope='col'>Sala</th>" +
+                        "<th scope='col'>Precio</th>" +
+                        "<th scope='col'>Fecha</th>" +
+                    "</tr>" +
+                "</thead>" +
+                "<tbody></tbody>" +
+             "</table>");
+    var tbody = $("#tablaproyecciones tbody");
+    proyecciones.forEach(function(proyeccion){
+        var tr = $("<tr />");
+        tr.html("<td>" + proyeccion.id + "</td>" +
+                "<td>" + proyeccion.pelicula.nombre + "</td>" +
+                "<td>" + proyeccion.sala.nombre + "</td>" +
+                "<td>" + proyeccion.precio + "</td>" +
+                "<td>" + proyeccion.fecha + "</td>");
+        tbody.append(tr);
+    });
+    $("#botonproyeccion").click(showIngresoProyecciones);
+}
 
 function loadIngresoPeli(){
-   var div = $("#body");
+    var div = $("#popupmovies");
     div.html("<div class='modal fade' id='add-modal' tabindex='-1' role='dialog'>" + 
             "<div class='modal-dialog' style='width: 400px'>" + 
                 "<div class='modal-content'>" +
@@ -131,12 +190,64 @@ function loadIngresoPeli(){
                         "</div>" +
                         "<br>" +
                         "<div class='form-group'>" +
-                            "<label for='nombre'>Nombre</label>" +
-                            "<input type='text' class='form-control' name='nombre' id='nombre' placeholder='Nombre'>" +
+                            "<label for='sala'>Sala</label>" +
+                            "<div class='select'>" +
+                                "<select id='salas'></select>" +
+                            "</div>" +
+                        "<div class='form-group'>" + 
+                            "<label for='pelicula'>Película</label>" +
+                            "<div class='select'>" +
+                                "<select id='pelicula'></select>" +
+                            "</div>" +
                         "</div>" +
-                        "<div class='form-group'>" +
+                        "<div class='form-group'>" + 
+                            "<label for='fecha'>Fecha</label>" +
+                            "<input type='text' class='form-control' placeholder='Fecha' aria-label='fecha' aria-describedby='basic-addon1' id='fecha'>" +
+                        "</div>" +
+                        "<div class='form-group'>" + 
                             "<label for='precio'>Precio</label>" +
-                            "<input type='text' class='form-control' name='precio' id='precio' placeholder='Precio'>" +
+                            "<input type='text' class='form-control' placeholder='Precio' aria-label='precio' aria-describedby='basic-addon1' id='precio'>" +
+                        "</div>" +
+                    "</div>" +
+                    "</form>" +
+                    "<div class='modal-footer d-flex justify-content-center'>"+
+                        "<div>" +
+                            "<input type='button' id='botonproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                        "</div>" +
+                    "</div>" +      
+                    "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +
+                "</div>" +
+            "</div>" +              
+        "</div>");
+    
+}
+
+async function loadIngresoProyec(){
+    let request = new Request(url+'api/peliculas', {method: 'GET', headers: { }});
+    let response = await fetch(request);
+    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
+    peliculas = await response.json();
+    request = new Request(url+'api/salas', {method: 'GET', headers: { }});
+    response = await fetch(request);
+    if (!response.ok){ return; }
+    salas = await response.json();
+    var div = $("#popupshows");
+    div.html("<div class='modal fade' id='add-modal-show' tabindex='-1' role='dialog'>" + 
+            "<div class='modal-dialog' style='width: 400px'>" + 
+                "<div class='modal-content'>" +
+                    "<div class='modal-header'>" +
+                        "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span> </button> </div>" +
+                    "</div>" +
+                    "<form id='formularioshow'>" +
+                    "<div class='modal-body'>" +
+                        "<div id='div-regiPeli-msg'>" +
+                            "<div id='icon-regiPeli-msg' ></div>" +
+                            "<span id='text-regiPeli-msg'>Registrar Proyección</span>" +
+                        "</div>" +
+                        "<br>" +
+                        "<div class='form-group'>" +
+                            "<label for='nombre'>Nombre</label>" +
+                            "<input type='text' class='form-control' name='nombre' id='nombrepeli' placeholder='Nombre'>" +
                         "</div>" +
                         "<div class='form-group'>" + 
                             "<label for='estado'>Estado</label>" +
@@ -184,13 +295,26 @@ function validarAddRoom(){
     return !error;
 }
 
+function validarAddShow(){
+    var error = false;
+    $("#formulario2 input").removeClass("invalid");
+    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
+    $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= !Number.isInteger(Number.parseInt($('#precio').val()));
+    if(!Number.isInteger(Number.parseInt($('#precio').val()))){
+       Number.isInteger(Number.parseInt($('#precio').addClass("invalid")));
+    }
+    return !error;
+}
+
 function validarAddMovie(){
     var error=false;
     $("#formulario input").removeClass("invalid");
     error |= $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
     $("#formulario input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
     error |= $("input[name='estado']:checked").length==0;
-    if ( $("input[name='estado']:checked").length==0) $("#formulario input[name='estado']").addClass("invalid");
+    if ( $("input[name='estado']:checked").length==0) 
+        $("#formulario input[name='estado']").addClass("invalid");   
     return !error;
 }
 
@@ -208,9 +332,28 @@ async function addRoom(){
     listRooms();
 }
 
+async function addShow(){
+    proyeccion.sala = salas.find(function(s){return(s.nombre == $('sala'))});
+    proyeccion.pelicula = peliculas.find( (p)=>{return (p.nombre==$('pelicula').val())});
+    /* construir el objeto proyeccion */
+    if(!validarAddShow()) return;
+    let request = new Request(url + "api/proyecciones",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(proyeccion)});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    listShow();
+}
+
 function showIngresoPelis(){
     resetMovies();
     renderMovies(); 
+}
+
+function showIngresoProyecciones(){
+    resetShows();
+    renderShows();
 }
 
 function errorMessage(status,place){  
@@ -227,35 +370,35 @@ function errorMessage(status,place){
     return;        
 }
 
-function fetchAndList(){
-    let request = new Request(url+'api/peliculas', {method: 'GET', headers: { }});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
-        peliculas = await response.json();
-        listMovies();
-        loadIngresoPeli();
-    })();
+
+async function fetchAndListMovies(){
+    listMovies();
+    loadIngresoPeli();
 }
 
-function registraPeli(){
+async function fetchAndListShows(){
+    listShow();
+    loadIngresoProyec();
+}
+
+async function registraPeli(){
     load();
     if(!validarAddMovie()) return;
     let request = new Request(url + "api/peliculas/agregar",
                             {method:'POST',
                             headers: { 'Content-Type': 'application/json'},
                             body: JSON.stringify(pelicula)});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {
-            errorMessage(response.status,$("#add-modal #errorDiv"));
-            return;
-        }
-        addImagen();
-        fetchAndList();
-        resetMovies();
-        $('#add-modal').modal('hide');
-    })();
+    const response = await fetch(request);
+    if (!response.ok) {
+        errorMessage(response.status,$("#add-modal #errorDiv"));
+        return;
+    }
+    addImagen();
+    listMovies();
+    resetMovies();
+    $("#add-modal #errorDiv").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha agregado con éxito'+'</div>');
 }
 
 function addImagen(){
@@ -290,13 +433,19 @@ function addImagen(){
 function signoff(){
     sessionStorage.removeItem("user");
     location.href = "/Cine";
-} 
+}
+
+function loadNav(){
+    $("#addmovie").click(fetchAndListMovies);
+    $("#addroom").click(listRooms);
+    $("#addshow").click(fetchAndListShows);
+    $("#signoff").click(signoff);
+}
 
 function loaded(){ /* async00*/
-    listRooms();
-    fetchAndList();
-    $("#addmovie").click(showIngresoPelis);
-    $("#signoff").click(signoff);
+    loadNav();
+    fetchAndListMovies();
+    fetchAndListShows();
 }
 
 $(loaded); 

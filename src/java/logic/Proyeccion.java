@@ -13,6 +13,7 @@ import java.util.Objects;
 
 public class Proyeccion {
     private int id;
+    private double precio;
     private Sala sala;
     private Pelicula pelicula;
     private String fecha;
@@ -22,13 +23,15 @@ public class Proyeccion {
         this.sala = new Sala();
         this.pelicula = new Pelicula();
         this.fecha = "";
+        this.precio = 0;
     }
 
-    public Proyeccion(int id, Sala sala, Pelicula pelicula, String fecha) {
+    public Proyeccion(int id, Sala sala, Pelicula pelicula, String fecha, double precio) {
         this.id = id;
         this.sala = sala;
         this.pelicula = pelicula;
         this.fecha = fecha;
+        this.precio = precio;
     }
 
     public int getId() {
@@ -37,6 +40,14 @@ public class Proyeccion {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
     public Sala getSala() {
