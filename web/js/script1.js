@@ -106,7 +106,7 @@ function list(){
 
 function showLogin(){
     reset();
-    renderLogin()
+    renderLogin();
 }
 
 function loadLogin(){

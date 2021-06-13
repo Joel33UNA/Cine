@@ -16,101 +16,157 @@ var butacas = new Array();
 var butaca = { fila: 0, columna:0, sala:null };
 var proyeccion = { id:0, sala:null, pelicula:null, fecha:"", precio:0 };
 
-async function listButacas(){
-    let request = new Request(url+'api/butacas', {method: 'GET', headers: { }});
-    const response = await fetch(request);
-    if (!response.ok){ return; }
-    butacas = await response.json();
-    renderButacas();
+function resetButacas(){
+    proyeccion = {id:0, sala:null, pelicula:null, fecha:"", precio:0 };
 }
 
-function renderButacas(){
-   var div = $("#popupbutacas");
-   div.html("");
-   div.html(
-           "<div class='select'>" +
-                "<select id='filas'>" +
-                    "<option value=''>Filas:</option>" +
-                    "<option value='1' type='number'>1</option>" +
-                    "<option value='2' type='number'>2</option>" +
-                    "<option value='3' type='number'>3</option>" +
-                    "<option value='4' type='number'>4</option>" +
-                    "<option value='5' type='number'>5</option>" +
-                    "<option value='6' type='number'>6</option>" +
-                    "<option value='7' type='number'>7</option>" +
-                    "<option value='8' type='number'>8</option>" +
-                "</select>" +
-            "</div>" +
-            "<div class='select'>" +
-                "<select id='columnas'>" +
-                    "<option value=''>Columnas:</option>" +
-                    "<option value='1' type='number'>1</option>" +
-                    "<option value='2' type='number'>2</option>" +
-                    "<option value='3' type='number'>3</option>" +
-                    "<option value='4' type='number'>4</option>" +
-                    "<option value='5' type='number'>5</option>" +
-                    "<option value='6' type='number'>6</option>" +
-                    "<option value='7' type='number'>7</option>" +
-                    "<option value='8' type='number'>8</option>" +
-                "</select>" +
-            "</div>" +
-            "<div class='input-group mb-3'>" +
-                "<div class='input-group-prepend'>" +
-                    "<span class='input-group-text' id='basic-addon1'>Nombre de la sala:</span>" +
-                "</div>" +
-                "<input type='text' class='form-control' placeholder='Sala' aria-label='sala' aria-describedby='basic-addon1' id='nombresala'>" +
-            "</div>" +
-           "<button type='button' class='btn btn-secondary' id='botonsala'>Agregar sala</button>" +
-           "<table class='table table-striped' id='tablasalas'>" +
+async function listButacas(){
+    let request = new Request(url+'api/proyecciones', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    proyecciones = await response.json();
+    renderShow();
+}
+
+function renderShows(){
+    $("#fecha").val(proyeccion.fecha);
+    $("#precio").val(proyeccion.precio);
+    $('#agregarproyeccion').off('click').on('click', addShow);
+    $("#add-modal-show #errorDiv").html("");       
+    $('#add-modal-show').modal('show');
+}
+
+function renderShow(){
+    var div = $("#body");
+    div.html("");
+    div.html("<button type='button' class='btn btn-secondary' id='botonproyeccion'>Agregar proyección</button>" +
+            "<table class='table table-striped' id='tablaproyecciones'>" +
                 "<thead>" +
                     "<tr>" +
-                        "<th scope='col'>ID Sala</th>" +
+                        "<th scope='col'>ID</th>" +
                         "<th scope='col'>Nombre</th>" +
-                        "<th scope='col'>Número de butacas</th>" +
+                        "<th scope='col'>Sala</th>" +
+                        "<th scope='col'>Precio</th>" +
+                        "<th scope='col'>Fecha</th>" +
                     "</tr>" +
                 "</thead>" +
                 "<tbody></tbody>" +
-            "</table>");
-    var tbody = $("#tablasalas tbody");
-    salas.forEach(function(sala){
+             "</table>");
+    var tbody = $("#tablaproyecciones tbody");
+    proyecciones.forEach(function(proyeccion){
         var tr = $("<tr />");
-        tr.html("<td>" + sala.id + "</td>" +
-                "<td>" + sala.nombre + "</td>" +
-                "<td>" + sala.butacas.length + "</td>");
+        tr.html("<td>" + proyeccion.id + "</td>" +
+                "<td>" + proyeccion.pelicula.nombre + "</td>" +
+                "<td>" + proyeccion.sala.nombre + "</td>" +
+                "<td>" + proyeccion.precio + "</td>" +
+                "<td>" + proyeccion.fecha + "</td>");
         tbody.append(tr);
     });
-    $("#addroom").click(renderRooms);
-    $("#botonsala").click(addRoom);
+    $("#botonproyeccion").click(showIngresoProyecciones);
 }
 
-function validarAddRoom(){
+async function loadIngresoProyec(){
+    let request = new Request(url+'api/peliculas', {method: 'GET', headers: { }});
+    let response = await fetch(request);
+    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
+    peliculas = await response.json();
+    request = new Request(url+'api/salas', {method: 'GET', headers: { }});
+    response = await fetch(request);
+    if (!response.ok){ return; }
+    salas = await response.json();
+    var div = $("#popupshows");
+    div.html("<div class='modal fade' id='add-modal-show' tabindex='-1' role='dialog'>" + 
+            "<div class='modal-dialog' style='width: 400px'>" + 
+                "<div class='modal-content'>" +
+                    "<div class='modal-header'>" +
+                        "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span> </button> </div>" +
+                    "</div>" +
+                    "<form id='formularioshow'>" +
+                    "<div class='modal-body'>" +
+                        "<div id='div-regiProyec-msg'>" +
+                            "<div id='icon-regiProyec-msg' ></div>" +
+                            "<span id='text-regiProyec-msg'>Registrar Proyección</span>" +
+                        "</div>" +
+                        "<br>" +
+                        "<div class='form-group'>" +
+                            "<label for='sala'>Sala</label>" +
+                            "<div class='select'>" +
+                                "<select id='salas'></select>" +
+                            "</div>" +
+                        "<div class='form-group'>" + 
+                            "<label for='pelicula'>Película</label>" +
+                            "<div class='select'>" +
+                                "<select id='pelicula'></select>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='form-group'>" + 
+                            "<label for='fecha'>Fecha</label>" +
+                            "<input type='text' class='form-control' placeholder='Fecha' aria-label='fecha' aria-describedby='basic-addon1' id='fecha'>" +
+                        "</div>" +
+                        "<div class='form-group'>" + 
+                            "<label for='precio'>Precio</label>" +
+                            "<input type='text' class='form-control' placeholder='Precio' aria-label='precio' aria-describedby='basic-addon1' id='precio'>" +
+                        "</div>" +
+                    "</div>" +
+                    "</form>" +
+                    "<div class='modal-footer d-flex justify-content-center'>"+
+                        "<div>" +
+                            "<input type='button' id='agregarproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                        "</div>" +
+                    "</div>" +      
+                    "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +
+                "</div>" +
+            "</div>" +              
+        "</div>");
+    var selectsalas = $("#salas");
+    var selectpeliculas = $("#pelicula");
+    salas.forEach(function(sala){
+        var option = $("<option />", { "value":sala.id });
+        option.html(sala.nombre);
+        selectsalas.append(option);
+    });
+    peliculas.forEach(function(pelicula){
+        var option = $("<option />", { "value":pelicula.id });
+        option.html(pelicula.nombre);
+        selectpeliculas.append(option);
+    });
+}
+
+function validarAddShow(){
     var error = false;
-    $(".select select").removeClass("invalid");
-    error |= $("#nombresala").filter( (i,e)=>{ return e.value=='';}).length > 0;
-    $("#nombresala").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
-    error |= !Number.isInteger(Number.parseInt($('#filas').val()));
-    if(!Number.isInteger(Number.parseInt($('#filas').val()))){
-        Number.isInteger(Number.parseInt($('#filas').addClass("invalid")));
-    }
-    error |= !Number.isInteger(Number.parseInt($('#columnas').val())); 
-    if(!Number.isInteger(Number.parseInt($('#columnas').val()))){
-        Number.isInteger(Number.parseInt($('#columnas').addClass("invalid"))); 
+    $("#formulario2 input").removeClass("invalid");
+    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
+    $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= !Number.isInteger(Number.parseInt($('#precio').val()));
+    if(!Number.isInteger(Number.parseInt($('#precio').val()))){
+       Number.isInteger(Number.parseInt($('#precio').addClass("invalid")));
     }
     return !error;
 }
 
-async function addRoom(){
-    sala.filas = Number.parseInt($('#filas').val());
-    sala.columnas = Number.parseInt($('#columnas').val());
-    sala.nombre = $('#nombresala').val();
-    if(!validarAddRoom()) return;
-    let request = new Request(url + "api/salas",
+async function addShow(){    
+    proyeccion.sala = salas.find(function(s){return(s.id==$("#salas").val())});
+    proyeccion.pelicula = peliculas.find(function(p){return(p.id==$('#pelicula').val())});
+    proyeccion.fecha = $('#fecha').val();
+    proyeccion.precio = Number.parseInt($('#precio').val());
+    if(!validarAddShow()) return;
+    let request = new Request(url + "api/proyecciones",
                             {method:'POST',
                             headers: { 'Content-Type': 'application/json'},
-                            body: JSON.stringify(sala)});
+                            body: JSON.stringify(proyeccion)});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    listRooms();
+    listShow();
+}
+
+function showIngresoProyecciones(){
+    resetShows();
+    renderShows();
+}
+
+async function fetchAndListShows(){
+    listShow();
+    loadIngresoProyec();
 }
 
 

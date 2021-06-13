@@ -49,17 +49,17 @@ public class Proyecciones {
         }
     }
     
-    @GET
-    @Path("{nombre}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Proyeccion> search(@PathParam("nombre") String nombre) {
-        try {
-            return Service.instancia().proyecsPeli(nombre);
-        } catch (Exception ex) {
-            throw new NotFoundException(); 
-        }
-    }
-    /*
+//    @GET
+//    @Path("{nombre}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public List<Proyeccion> search(@PathParam("nombre") String nombre) {
+//        try {
+//            return Service.instancia().proyecsPeli(nombre);
+//        } catch (Exception ex) {
+//            throw new NotFoundException(); 
+//        }
+//    }
+    
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -69,7 +69,7 @@ public class Proyecciones {
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    } */
+    } 
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 

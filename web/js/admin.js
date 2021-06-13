@@ -13,7 +13,7 @@ var url = "http://localhost:8080/Cine/";
 //==============================================================================================================
 
 var salas = new Array();
-var sala = { filas: 0, columnas:0, nombre:"" };
+var sala = { filas: 0, columnas:0, nombre:"", id:0 };
 
 async function listRooms(){
     let request = new Request(url+'api/salas', {method: 'GET', headers: { }});
@@ -133,9 +133,9 @@ async function listShow(){
 }
 
 function renderShows(){
-    $("#nombreshow").val(pelicula.nombre);
-    $("input[name='estado']").val([pelicula.estado]);
-    $('#regPel').off('click').on('click', addShow);
+    $("#fecha").val(proyeccion.fecha);
+    $("#precio").val(proyeccion.precio);
+    $('#agregarproyeccion').off('click').on('click', addShow);
     $("#add-modal-show #errorDiv").html("");       
     $('#add-modal-show').modal('show');
 }
@@ -215,13 +215,25 @@ async function loadIngresoProyec(){
                     "</form>" +
                     "<div class='modal-footer d-flex justify-content-center'>"+
                         "<div>" +
-                            "<input type='button' id='botonproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                            "<input type='button' id='agregarproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
                         "</div>" +
                     "</div>" +      
                     "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +
                 "</div>" +
             "</div>" +              
         "</div>");
+    var selectsalas = $("#salas");
+    var selectpeliculas = $("#pelicula");
+    salas.forEach(function(sala){
+        var option = $("<option />", { "value":sala.id });
+        option.html(sala.nombre);
+        selectsalas.append(option);
+    });
+    peliculas.forEach(function(pelicula){
+        var option = $("<option />", { "value":pelicula.id });
+        option.html(pelicula.nombre);
+        selectpeliculas.append(option);
+    });
 }
 
 function validarAddShow(){
@@ -237,8 +249,8 @@ function validarAddShow(){
 }
 
 async function addShow(){    
-    proyeccion.sala = salas.find(function(s){return(s.nombre == $('#sala'))});
-    proyeccion.pelicula = peliculas.find( (p)=>{return (p.nombre == $('#pelicula').val())});
+    proyeccion.sala = salas.find(function(s){return(s.id==$("#salas").val())});
+    proyeccion.pelicula = peliculas.find(function(p){return(p.id==$('#pelicula').val())});
     proyeccion.fecha = $('#fecha').val();
     proyeccion.precio = Number.parseInt($('#precio').val());
     if(!validarAddShow()) return;
@@ -304,7 +316,7 @@ function listMovie(listado, movie){
 function renderMovies(){
     $("#nombrepeli").val(pelicula.nombre);
     $("input[name='estado']").val([pelicula.estado]);
-    $('#botonproyeccion').off('click').on('click', addShow);
+    $('#regPel').off('click').on('click', registraPeli);
     $("#add-modal #errorDiv").html("");
     $("#add-modal #imagen").val("");        
     $('#add-modal').modal('show');        
