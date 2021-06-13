@@ -59,7 +59,7 @@ public class Proyecciones {
             throw new NotFoundException(); 
         }
     }
-    
+    /*
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -69,7 +69,7 @@ public class Proyecciones {
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    } 
+    } */
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
