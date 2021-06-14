@@ -205,7 +205,16 @@ async function loadIngresoProyec(){
                         "</div>" +
                         "<div class='form-group'>" + 
                             "<label for='fecha'>Fecha</label>" +
-                            "<input type='text' class='form-control' placeholder='Fecha' aria-label='fecha' aria-describedby='basic-addon1' id='fecha'>" +
+                            "<div class='select'>" +
+                                "<select id='fecha'>" +
+                                    "<option value='Jul 01, 10am'>Jul 01, 10am</option>" +
+                                    "<option value='Jul 01, 1pm'>Jul 01, 1pm</option>" +
+                                    "<option value='Jul 01, 5pm'>Jul 01, 5pm</option>" +
+                                    "<option value='Jul 01, 8pm'>Jul 01, 8pm</option>" +
+                                    "<option value='Jul 02, 10am'>Jul 02, 10am</option>" +
+                                    "<option value='Jul 02, 10am'>Jul 02, 10am</option>" +
+                                "</select>" +
+                            "</div>" +
                         "</div>" +
                         "<div class='form-group'>" + 
                             "<label for='precio'>Precio</label>" +
@@ -239,8 +248,18 @@ async function loadIngresoProyec(){
 function validarAddShow(){
     var error = false;
     $("#formulario2 input").removeClass("invalid");
-    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
+    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;
     $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    error |= $('#fecha').val() == null;
+    if($('#pelicula').val() === null){
+        $('#pelicula').addClass("invalid");
+    }
+    if($('#salas').val() === null){
+        $('#salas').addClass("invalid");
+    }
+    if($('#fecha').val() === null){
+        $('#fecha').addClass("invalid");
+    }
     error |= !Number.isInteger(Number.parseInt($('#precio').val()));
     if(!Number.isInteger(Number.parseInt($('#precio').val()))){
        Number.isInteger(Number.parseInt($('#precio').addClass("invalid")));

@@ -50,9 +50,9 @@ public class Compras {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Compra get(@PathParam("id") int id) {
+    public Compra get(@PathParam("id") int proyeccion) {
         try {
-            return Service.instancia().compraEspec(id);
+            return Service.instancia().compraEspec(proyeccion);
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }

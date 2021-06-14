@@ -23,7 +23,7 @@ public class CompraDAO {
     
     public void add(Compra c) throws Exception{
         String sql = "insert into compras (id, id_cli, id_pro, precio_total)"
-                + "values (%s, '%s', %s, %s)";
+                + "values (%s, %s, '%s', %s, %s)";
         sql = String.format(sql, c.getId(), c.getCliente().getId(), c.getProyeccion().getId());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){

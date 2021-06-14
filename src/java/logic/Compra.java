@@ -29,7 +29,7 @@ public class Compra {
         this.cliente = cliente;
         this.proyeccion = proyeccion;
     }
-
+    
     public int getId() {
         return id;
     }

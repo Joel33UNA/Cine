@@ -144,8 +144,13 @@ public class Service {
     }
 
     public Compra compraEspec(int id) throws Exception {
-        Compra compra = compras.readCompra(id);
-        return compra;
+        List<Compra> todas = compras.readAll();
+        for(Compra c : todas){
+            if(c.getProyeccion().getId() == id){
+                return c;
+            }
+        }
+        return null; 
     }
 
     public void compraAdd(Compra c) throws Exception{
