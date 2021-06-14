@@ -17,7 +17,7 @@ import logic.Pelicula;
 
 public class PeliculaDAO {
     
-    public List<Pelicula> readAll() throws Exception{
+    public static List<Pelicula> readAll() throws Exception{
         List<Pelicula> pelis = new ArrayList<>();
         String sql = "select* from peliculas";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -28,7 +28,7 @@ public class PeliculaDAO {
         return pelis;
     }
     
-    public Pelicula readPelicula(String nombre) throws Exception{
+    public static Pelicula readPelicula(String nombre) throws Exception{
         String sql = "select* from peliculas where nombre=%s";
         sql = String.format(sql, nombre);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -41,29 +41,20 @@ public class PeliculaDAO {
         }
     }
     
-    public Pelicula from (ResultSet rs){
-        try {
-            Pelicula r = new Pelicula();
-            r.setId(rs.getInt("id"));
-            r.setNombre(rs.getString("nombre"));
-            r.setEstado(rs.getString("estado"));
-            return r;
-        } catch (SQLException ex) {
+    public static Pelicula readPeliculaById(int id) throws Exception{
+        String sql = "select* from peliculas where id=%s";
+        sql = String.format(sql, id);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        if(rs.next()){
+            return from(rs);
+        }
+        else{
             return null;
         }
     }
-
-    public void add(Pelicula p) throws Exception{
-        String sql = "insert into peliculas (nombre, estado)"
-                + "values ('%s', '%s')";
-        sql = String.format(sql, p.getNombre(), p.getEstado());
-        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
-        if(Connection.instance().executeUpdate(stm1) == 0){
-            throw new Exception("Pelicula ya existe");
-        }
-    }
-
-    public void updatePeli(Pelicula peli) throws Exception {
+    
+    public static void updatePeli(Pelicula peli) throws Exception {
         String sql="update peliculas set estado=? "+
                 "where nombre=?";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -72,6 +63,28 @@ public class PeliculaDAO {
         int count = Connection.instance().executeUpdate(stm);
         if (count == 0){
             throw new Exception("Pelicula no existe");
+        }
+    }
+    
+    public static void add(Pelicula p) throws Exception{
+        String sql = "insert into peliculas (nombre, estado)"
+                + "values ('%s', '%s')";
+        sql = String.format(sql, p.getNombre(), p.getEstado());
+        PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
+        if(Connection.instance().executeUpdate(stm1) == 0){
+            throw new Exception("Pelicula ya existe");
+        }
+    }
+    
+    public static Pelicula from (ResultSet rs) throws Exception{
+        try {
+            Pelicula r = new Pelicula();
+            r.setId(rs.getInt("id"));
+            r.setNombre(rs.getString("nombre"));
+            r.setEstado(rs.getString("estado"));
+            return r;
+        } catch (SQLException ex) {
+            return null;
         }
     }
 }

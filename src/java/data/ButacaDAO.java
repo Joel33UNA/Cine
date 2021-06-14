@@ -18,7 +18,7 @@ import logic.Sala;
 
 public class ButacaDAO {
     
-    public void add(Butaca b) throws Exception{
+    public static void add(Butaca b) throws Exception{
         String sql = "insert into butacas (id_sala, fila, columna)"
                 + " values (%s, %s, %s)";
         sql = String.format(sql, b.getSala().getId(), b.getFila(), b.getColumna());
@@ -28,7 +28,7 @@ public class ButacaDAO {
         }
     }
     
-    public List<Butaca> readAll() throws Exception{
+    public static List<Butaca> readAll() throws Exception{
         List<Butaca> bu = new ArrayList<>();
         String sql = "select* from butacas";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -39,7 +39,7 @@ public class ButacaDAO {
         return bu;
     }
     
-    public Butaca readButaca(int id) throws Exception{
+    public static Butaca readButaca(int id) throws Exception{
         String sql = "select* from butacas where id=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -52,40 +52,26 @@ public class ButacaDAO {
         }
     }
     
-    public Sala readSala(int id) throws Exception{
-        String sql = "select* from salas where id=%s";
+    public static List<Butaca> readButacaBySala(int id) throws Exception{
+        List<Butaca> butacas = new ArrayList<>();
+        String sql = "select* from butacas where id_sala=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return fromSala(rs);
+        while(rs.next()){
+            butacas.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return butacas;
     }
     
-    public Butaca from (ResultSet rs) throws Exception{
+    public static Butaca from (ResultSet rs) throws Exception{
         try {
             Sala s = new Sala();
             Butaca r = new Butaca();
-            s = readSala(rs.getInt("id_sala"));
+            s = data.SalaDAO.readSalaById(rs.getInt("id_sala"));
             r.setFila(rs.getInt("fila"));
             r.setColumna(rs.getInt("columna"));
             r.setSala(s);
-            return r;
-        } catch (SQLException ex) {
-            return null;
-        }
-    }
-    
-    public Sala fromSala (ResultSet rs){
-        try {
-            Sala r = new Sala();
-            r.setId(rs.getInt("id"));
-            r.setFilas(rs.getInt("filas"));
-            r.setColumnas(rs.getInt("columnas"));
-            r.setNombre(rs.getString("nombre"));
             return r;
         } catch (SQLException ex) {
             return null;

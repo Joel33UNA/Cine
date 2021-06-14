@@ -113,13 +113,17 @@ input.invalid {box-shadow: 0 0 1px 1px red;}
   
 .select select {
     padding: 5px 8px;
-    width: 130%;
+    width: 150%;
     border: none;
     box-shadow: none;
     background-color: transparent;
     background-image: none;
     appearance: none;
     
+}
+
+select.invalid{
+    border: 1px solid #e74c3c;
 }
 
 footer{

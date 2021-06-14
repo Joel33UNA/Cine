@@ -19,7 +19,8 @@ import logic.Sala;
 
 public class ProyeccionDAO {
     
-    public void add(Proyeccion p) throws Exception{
+    
+    public static void add(Proyeccion p) throws Exception{
         String sql = "insert into proyecciones (id_sala, id_pelicula, fecha, precio)"
                 + "values (%s, %s, '%s', %s)";
         sql = String.format(sql, p.getSala().getId(), p.getPelicula().getId(), p.getFecha(), p.getPrecio());
@@ -29,7 +30,7 @@ public class ProyeccionDAO {
         }
     }
     
-    public List<Proyeccion> readAll() throws Exception{
+    public static List<Proyeccion> readAll() throws Exception{
         List<Proyeccion> proyecs = new ArrayList<>();
         String sql = "select* from proyecciones";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -40,7 +41,7 @@ public class ProyeccionDAO {
         return proyecs;
     }
     
-    public Proyeccion readProyeccion(int id) throws Exception{
+    public static Proyeccion readProyeccion(int id) throws Exception{
         String sql = "select* from proyecciones where id=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -53,69 +54,30 @@ public class ProyeccionDAO {
         }
     }
     
-    public Sala readSala(int id) throws Exception{
-        String sql = "select* from salas where id=%s";
+    public static List<Proyeccion> readProyeccionesByPelicula(int id) throws Exception{
+        List<Proyeccion> proyecciones = new ArrayList<>();
+        String sql = "select* from proyecciones where id_pelicula=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return fromSala(rs);
+        while(rs.next()){
+            proyecciones.add(from(rs));
         }
-        else{
-            return null;
-        }
+        return proyecciones;
     }
     
-    public Pelicula readPelicula(int id) throws Exception{
-        String sql = "select* from peliculas where id=%s";
-        sql = String.format(sql, id);
-        PreparedStatement stm = Connection.instance().prepareStatement(sql);
-        ResultSet rs = Connection.instance().executeQuery(stm);
-        if(rs.next()){
-            return fromPelicula(rs);
-        }
-        else{
-            return null;
-        }
-    }
-    
-    public Proyeccion from (ResultSet rs) throws Exception{
+    public static Proyeccion from (ResultSet rs) throws Exception{
         try {
             Proyeccion r = new Proyeccion();
             Sala s = new Sala();
             Pelicula p = new Pelicula();
             r.setId(rs.getInt("id"));
             r.setPrecio(rs.getDouble("precio"));
-            s = readSala(rs.getInt("id_sala"));
-            p = readPelicula(rs.getInt("id_pelicula"));
+            s = data.SalaDAO.readSalaById(rs.getInt("id_sala"));
+            p = data.PeliculaDAO.readPeliculaById(rs.getInt("id_pelicula"));
             r.setFecha(rs.getString("fecha")); 
             r.setSala(s);
             r.setPelicula(p);
-            return r;
-        } catch (SQLException ex) {
-            return null;
-        }
-    }
-    
-    public Sala fromSala (ResultSet rs){
-        try {
-            Sala r = new Sala();
-            r.setId(rs.getInt("id"));
-            r.setFilas(rs.getInt("filas"));
-            r.setColumnas(rs.getInt("columnas"));
-            r.setNombre(rs.getString("nombre"));
-            return r;
-        } catch (SQLException ex) {
-            return null;
-        }
-    }
-    
-    public Pelicula fromPelicula (ResultSet rs){
-        try {
-            Pelicula r = new Pelicula();
-            r.setId(rs.getInt("id"));
-            r.setNombre(rs.getString("nombre"));
-            r.setEstado(rs.getString("estado"));
             return r;
         } catch (SQLException ex) {
             return null;

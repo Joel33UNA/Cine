@@ -11,35 +11,27 @@ var url = "http://localhost:8080/Cine/";
 //==============================================================================================================
 //================    BUTACAS    ===============================================================================
 //==============================================================================================================
-/*
+
 var butacas = new Array();
 var butaca = { fila: 0, columna:0, sala:null };
 var proyeccion = { id:0, sala:null, pelicula:null, fecha:"", precio:0 };
 
 function resetButacas(){
-    proyeccion = {id:0, sala:null, pelicula:null, fecha:"", precio:0 };
+    butaca = { fila: 0, columna:0, sala:null };
 }
 
 async function listButacas(){
-    let request = new Request(url+'api/proyecciones', {method: 'GET', headers: { }});
+    let request = new Request(url+'api/butacas', {method: 'GET', headers: { }});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    proyecciones = await response.json();
-    renderShow();
+    butacas = await response.json();
+    renderButacas();
 }
 
-function renderShows(){
-    $("#fecha").val(proyeccion.fecha);
-    $("#precio").val(proyeccion.precio);
-    $('#agregarproyeccion').off('click').on('click', addShow);
-    $("#add-modal-show #errorDiv").html("");       
-    $('#add-modal-show').modal('show');
-}
-
-function renderShow(){
+function renderButacas(){
     var div = $("#body");
     div.html("");
-    div.html("<button type='button' class='btn btn-secondary' id='botonproyeccion'>Agregar proyección</button>" +
+    div.html("<button type='button' class='btn btn-secondary' id='botonButaca'>Agregar Butaca</button>" +
             "<table class='table table-striped' id='tablaproyecciones'>" +
                 "<thead>" +
                     "<tr>" +
@@ -62,74 +54,91 @@ function renderShow(){
                 "<td>" + proyeccion.fecha + "</td>");
         tbody.append(tr);
     });
-    $("#botonproyeccion").click(showIngresoProyecciones);
+    $("#botonButacas").click(showIngresoButacas);
 }
 
-async function loadIngresoProyec(){
-    let request = new Request(url+'api/peliculas', {method: 'GET', headers: { }});
+async function loadButacas(){
+    let request = new Request(url+'proyecciones'+proyeccion.id, {method: 'GET', headers: { }});
     let response = await fetch(request);
     if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
-    peliculas = await response.json();
-    request = new Request(url+'api/salas', {method: 'GET', headers: { }});
-    response = await fetch(request);
-    if (!response.ok){ return; }
-    salas = await response.json();
-    var div = $("#popupshows");
-    div.html("<div class='modal fade' id='add-modal-show' tabindex='-1' role='dialog'>" + 
+    proyeccion = await response.json();
+    var div = $("#popupbutacas");
+    div.html("<div class='modal fade' id='add-modal-butacas' tabindex='-1' role='dialog'>" + 
             "<div class='modal-dialog' style='width: 400px'>" + 
                 "<div class='modal-content'>" +
                     "<div class='modal-header'>" +
                         "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span> </button> </div>" +
                     "</div>" +
-                    "<form id='formularioshow'>" +
-                    "<div class='modal-body'>" +
-                        "<div id='div-regiProyec-msg'>" +
-                            "<div id='icon-regiProyec-msg' ></div>" +
-                            "<span id='text-regiProyec-msg'>Registrar Proyección</span>" +
-                        "</div>" +
-                        "<br>" +
-                        "<div class='form-group'>" +
-                            "<label for='sala'>Sala</label>" +
-                            "<div class='select'>" +
-                                "<select id='salas'></select>" +
+                    "<form id='formularioButacas'>" +
+                        "<div class='modal-body'>" +
+                            "<div id='div-regiButacas-msg'>" +
+                                "<span id='text-regiButacas-msg'></span>" +
                             "</div>" +
-                        "<div class='form-group'>" + 
-                            "<label for='pelicula'>Película</label>" +
-                            "<div class='select'>" +
-                                "<select id='pelicula'></select>" +
+                            "<br>" +
+                            "<div class='form-group'>" +
+                                "<div id='imagenPro'></div>" +
+                                "<div id='precioPro'></div>" +
+                            "<div class='form-group'>" + 
+                                "<p>Butacas</p>"+
+                                "<ul class='showcase'>"+
+                                    "<li>"+
+                                        "<div id='seat' class='seat'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Disponible</small>"+
+                                    "</li>"+ 
+                                    "<li>"+
+                                        "<div id='seat' class='seat selected'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Seleccionado</small>"+
+                                    "</li>"+ 
+                                    "<li>"+
+                                        "<div id='seat' class='seat occupied'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Ocupado</small>"+
+                                    "</li>"+
+                                "</ul>"+
+                                "<div class='container'>"+
+                                    "<div class='screen'></div>"+
+                                    "<div class='allRows' id='allRows'>"+
+                                        /*"<div class='row'>"+
+                                            "<div id='seat' class='seat'></div>"+
+                                        "</div"+*/
+                                    "</div>"+
+                                "</div>"+
+                                "<p class='text' style='font-size: 1em;margin:0px 0px 15px 0px'>"+
+                                    "Usted ha seleccionado <span id='count'>0</span> butacas por el precio de"+
+                                    "<span id='total'>0</span>"+
+                                "</p>"+
                             "</div>" +
                         "</div>" +
-                        "<div class='form-group'>" + 
-                            "<label for='fecha'>Fecha</label>" +
-                            "<input type='text' class='form-control' placeholder='Fecha' aria-label='fecha' aria-describedby='basic-addon1' id='fecha'>" +
-                        "</div>" +
-                        "<div class='form-group'>" + 
-                            "<label for='precio'>Precio</label>" +
-                            "<input type='text' class='form-control' placeholder='Precio' aria-label='precio' aria-describedby='basic-addon1' id='precio'>" +
-                        "</div>" +
-                    "</div>" +
                     "</form>" +
                     "<div class='modal-footer d-flex justify-content-center'>"+
                         "<div>" +
-                            "<input type='button' id='agregarproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                            "<input type='button' id='agregarCompra' class='btn btn-primary btn-lg btn-block' value='Comprar'>"+
                         "</div>" +
                     "</div>" +      
-                    "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +
+                    "<div id='errorDiv' style='width:70%; margin: auto;'></div>" +
                 "</div>" +
             "</div>" +              
         "</div>");
-    var selectsalas = $("#salas");
-    var selectpeliculas = $("#pelicula");
-    salas.forEach(function(sala){
-        var option = $("<option />", { "value":sala.id });
-        option.html(sala.nombre);
-        selectsalas.append(option);
-    });
-    peliculas.forEach(function(pelicula){
-        var option = $("<option />", { "value":pelicula.id });
-        option.html(pelicula.nombre);
-        selectpeliculas.append(option);
-    });
+
+        // PARA HACER ESTO DEBO RECUPERAR ANTES LA LISTA DE BUTACAS DE LA BASE DE DATOS
+    var peliSala = $("#text-regiButacas-msg");
+    var descr = $("<p />", { "value":proyeccion.pelicula.nombre + " - " + proyeccion.fecha + " / "+ proyeccion.sala.nombre });
+    peliSala.append(descr);
+    var pelIma = $("#imagenPro");
+    var foto = $("<img />", { "src":url+"api/peliculas/"+proyeccion.pelicula.nombre+"/imagen" });
+    pelIma.append(foto);
+    var proyePrecio = $("#precioPro");
+    var pre = $("<p />", { "value":proyeccion.precio });
+    proyePrecio.append(pre);
+    var rows = $("#allRows");
+    for(i = 0; i < proyeccion.sala.filas; i++){
+        var row = $("<div />", { "class": "row" });
+        for(j = 0; j < proyeccion.sala.columnas; j++){
+            
+            var asiento = $("<div />", {"class": "seat"});
+            row.append(asiento);
+        }
+        rows.append(row);
+    }
 }
 
 function validarAddShow(){
@@ -153,20 +162,20 @@ async function addShow(){
     let request = new Request(url + "api/proyecciones",
                             {method:'POST',
                             headers: { 'Content-Type': 'application/json'},
-                            body: JSON.stringify(proyeccion)});
+                            body: JSON.stringify(Butaca)});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    listShow();
+    listButacas();
 }
 
-function showIngresoProyecciones(){
-    resetShows();
-    renderShows();
+function showIngresoButacas(){
+    resetButacas();
+    renderButacas();
 }
 
-async function fetchAndListShows(){
-    listShow();
-    loadIngresoProyec();
+async function fetchAndListButacas(){
+    listButacas();
+    loadButacas();
 }
 
 
@@ -180,17 +189,13 @@ function signoff(){
 }
 
 function loadNav(){
-    $("#addmovie").click(fetchAndListMovies);
-    $("#addroom").click(listRooms);
-    $("#addshow").click(fetchAndListShows);
+    //$("#purchases").click(cargarCompras);
     $("#signoff").click(signoff);
 }
 
 function loaded(){ //async00
     loadNav();
-    fetchAndListMovies();
-    fetchAndListShows();
+    fetchAndListButacas();
 }
 
 $(loaded);
-*/
