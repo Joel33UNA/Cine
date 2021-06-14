@@ -47,6 +47,17 @@ public class Peliculas {
     } 
     
     @GET
+    @Path("cartelera")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Pelicula> getCartelera() { 
+        try {
+            return Service.instancia().getCartelera();
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    } 
+    
+    @GET
     @Path("{nombre}")
     @Produces({MediaType.APPLICATION_JSON})
     public Pelicula get(@PathParam("nombre") String nombre) {

@@ -143,12 +143,23 @@ public class Service {
         List<Pelicula> result = new ArrayList<>();
         List<Pelicula> todas = data.PeliculaDAO.readAll();
         for(Pelicula p: todas){
-            if(p.getNombre().contains(nombre) && p.getEstado().equals("en cartelera")) {
+            if(p.getNombre().contains(nombre)) {
                 result.add(p);
             } 
         }
         return result;
-    } 
+    }
+    
+    public List<Pelicula> getCartelera() throws Exception{
+        List<Pelicula> result = new ArrayList<>();
+        List<Pelicula> todas = data.PeliculaDAO.readAll();
+        for(Pelicula p : todas){
+            if(p.getEstado().equals("en cartelera")){
+                result.add(p);
+            }
+        }
+        return result;
+    }
 
     public Pelicula pelicEspec(String nombre) throws Exception {
         Pelicula p = data.PeliculaDAO.readPelicula(nombre);

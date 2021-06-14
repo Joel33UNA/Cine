@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import logic.Pelicula;
+import logic.Proyeccion;
+import logic.Sala;
 
 public class PeliculaDAO {
     
@@ -82,6 +84,34 @@ public class PeliculaDAO {
             r.setId(rs.getInt("id"));
             r.setNombre(rs.getString("nombre"));
             r.setEstado(rs.getString("estado"));
+            r.setProyecciones(readProyeccionesByPelicula(r.getId()));
+            return r;
+        } catch (SQLException ex) {
+            return null;
+        }
+    }
+    
+    public static List<Proyeccion> readProyeccionesByPelicula(int id) throws Exception{
+        List<Proyeccion> proyecciones = new ArrayList<>();
+        String sql = "select* from proyecciones where id_pelicula=%s";
+        sql = String.format(sql, id);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        while(rs.next()){
+            proyecciones.add(fromProyeccion(rs));
+        }
+        return proyecciones;
+    }
+    
+    public static Proyeccion fromProyeccion(ResultSet rs) throws Exception{
+        try {
+            Proyeccion r = new Proyeccion();
+            Sala s = new Sala();
+            r.setId(rs.getInt("id"));
+            r.setPrecio(rs.getDouble("precio"));
+            s = data.SalaDAO.readSalaById(rs.getInt("id_sala"));
+            r.setFecha(rs.getString("fecha")); 
+            r.setSala(s);
             return r;
         } catch (SQLException ex) {
             return null;

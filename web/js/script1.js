@@ -6,10 +6,54 @@ ESTUDIANTE: JOEL ZAMORA Y DIEGO JIMÉNEZ
 PROFESOR: JOSE SÁNCHEZ SALAZAR
 */
 
+var url = "http://localhost:8080/Cine/";
+
+//==============================================================================================================
+//================   MOVIES/SHOWS  =============================================================================
+//==============================================================================================================
+
+var peliculas = new Array();
+var pelicula = { id:0, nombre:"", estado:"", proyecciones:null };
+
+async function listAllShows(){
+    let request = new Request(url+'api/peliculas/cartelera', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
+    peliculas = await response.json();
+    $("#body").html("");
+    var div = $("<div />", {"id":"movies", class:"grid-container"});
+    $("#body").append(div);
+    peliculas.forEach(function(peli){
+        var div2 = $("<div />", {"class":"father"});
+        div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
+                 "<div class='downdiv'>" +  
+                    "<p>" + peli.nombre + "</p>" +
+                    "<ul></ul>" +
+                 "</div>");
+        div.append(div2); 
+        peli.proyecciones.forEach(function(proy){
+            var li = $("<li />");
+            li.html("<a href='#'>" + proy.fecha + "</a>");
+            $(".downdiv ul").append(li);
+        })
+    });
+}
+
+function loadSelectButacas(){
+    
+}
+
+function fetchAndListShows(){
+    listAllShows();
+    loadSelectButacas()
+}
+
+//==============================================================================================================
+//================   USERS     =================================================================================
+//==============================================================================================================
+
 var usuarios = new Array();
 var usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" };
-
-var url = "http://localhost:8080/Cine/";
 
 function reset(){
     usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" }; 
@@ -236,13 +280,18 @@ function errorMessage(status,place){
     return;        
 } 
 
-function fetchAndList(){
+//==============================================================================================================
+//==============================================================================================================
+//==============================================================================================================
+
+function loadPopups(){
     loadLogin();
     loadCheckin();
 }
 
 function loaded(){
-    fetchAndList();
+    loadPopups();
+    fetchAndListShows();
     $("#login").click(showLogin);
     $("#checkin").click(showCheckin);
     $("#signoff").click(signoff);
