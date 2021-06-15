@@ -10,6 +10,7 @@ package presentation;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -27,6 +28,7 @@ import logic.Service;
 import logic.Usuario;
 
 @Path("/usuarios")
+@PermitAll
 public class Usuarios {
     
     @GET

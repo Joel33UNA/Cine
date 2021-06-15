@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.NotAcceptableException;
@@ -58,6 +59,7 @@ public class Compras {
         }
     }
     
+    @RolesAllowed("cliente")
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Compra c) {  

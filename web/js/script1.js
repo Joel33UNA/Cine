@@ -6,10 +6,46 @@ ESTUDIANTE: JOEL ZAMORA Y DIEGO JIMÉNEZ
 PROFESOR: JOSE SÁNCHEZ SALAZAR
 */
 
+var url = "http://localhost:8080/Cine/";
+
+//==============================================================================================================
+//================   MOVIES/SHOWS  =============================================================================
+//==============================================================================================================
+
+var peliculas = new Array();
+var proyeccion = { id:0, sala:null, pelicula:null, fecha:"", precio:0 };
+
+async function listAllShows(){
+    let request = new Request(url+'api/peliculas/cartelera', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
+    peliculas = await response.json();
+    $("#body").html("");
+    var div = $("<div />", {"id":"movies", class:"grid-container"});
+    $("#body").append(div);
+    peliculas.forEach(function(peli){
+        var div2 = $("<div />", {"class":"father"});
+        div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
+                 "<div class='downdiv'>" +  
+                    "<p>" + peli.nombre + "</p>" +
+                    "<ul></ul>" +
+                 "</div>");
+        div.append(div2); 
+        peli.proyecciones.forEach(function(proy){
+            var li = $("<li />");
+            li.html("<a href='#' role='button' id='comprar'>" + proy.fecha + "</a>");
+            $(".downdiv ul").append(li);
+            $('#comprar').click(showLogin());
+        });
+    });
+}
+
+//==============================================================================================================
+//================   USERS     =================================================================================
+//==============================================================================================================
+
 var usuarios = new Array();
 var usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" };
-
-var url = "http://localhost:8080/Cine/";
 
 function reset(){
     usuario = { id:"", clave:"", rol:"", nombre:"", numTarjeta:"" }; 
@@ -34,7 +70,7 @@ function login(){
             location.href = "/Cine/presentation/administrador.html";
         }
         else if(usuario.rol === "cliente"){
-            location.href = "/Cine";
+            location.href = "/Cine/presentation/cliente.html";
         }
     })();
 }
@@ -236,13 +272,18 @@ function errorMessage(status,place){
     return;        
 } 
 
-function fetchAndList(){
+//==============================================================================================================
+//==============================================================================================================
+//==============================================================================================================
+
+function loadPopups(){
     loadLogin();
     loadCheckin();
 }
 
 function loaded(){
-    fetchAndList();
+    loadPopups();
+    listAllShows();
     $("#login").click(showLogin);
     $("#checkin").click(showCheckin);
     $("#signoff").click(signoff);

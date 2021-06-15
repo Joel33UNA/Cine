@@ -21,21 +21,8 @@ import presentation.Peliculas;
 
 public class Service {
     private static Service instancia;
-    private final UsuarioDAO usuarios;
-    private final PeliculaDAO peliculas;
-    private final ProyeccionDAO proyecciones;
-    private final SalaDAO salas;
-    private final CompraDAO compras;
-    private final ButacaDAO butacas;
 
-    public Service() {
-        this.usuarios = new UsuarioDAO();
-        this.peliculas = new PeliculaDAO();
-        this.proyecciones = new ProyeccionDAO();
-        this.salas = new SalaDAO();
-        this.compras = new CompraDAO();
-        this.butacas = new ButacaDAO();
-    }
+    private Service() {}
     
     public static Service instancia(){
         if (instancia == null){
@@ -45,53 +32,53 @@ public class Service {
     }
     
     public void agregarUsuario(Usuario u) throws Exception{
-        usuarios.add(u);
+        data.UsuarioDAO.add(u);
     }
     
     public void agregarSala(Sala s) throws Exception{
-        salas.add(s);
-        Sala salaRecuperada = salas.readSala(s.getNombre());
+        data.SalaDAO.add(s);
+        Sala salaRecuperada = data.SalaDAO.readSala(s.getNombre());
         for(int i = 0; i < salaRecuperada.getFilas(); i++){
             for(int j = 0; j < salaRecuperada.getColumnas(); j++){
                 Butaca butaca = new Butaca(i + 1, j + 1, salaRecuperada);
                 s.addButaca(butaca);
-                butacas.add(butaca);  
+                data.ButacaDAO.add(butaca);  
             }
         }
     }
     
     public Usuario buscarUsuario(String id) throws Exception{
-        Usuario usuario = usuarios.readUsuario(id);
+        Usuario usuario = data.UsuarioDAO.readUsuario(id);
         return usuario;
     }
     
     public Usuario comprobarUsuario(Usuario u) throws Exception{
-        Usuario usuario = usuarios.read(u.id, u.clave);
+        Usuario usuario = data.UsuarioDAO.read(u.id, u.clave);
         return usuario;
     }
     
     public List<Usuario> filtrarUsuarios(String nombre) throws Exception{
-        List<Usuario> filtro = usuarios.filtrarUsuarios(nombre);
+        List<Usuario> filtro = data.UsuarioDAO.filtrarUsuarios(nombre);
         return filtro;
     }
     
     public List<Sala> getSalas() throws Exception{
-        List<Sala> filtro = salas.readAll();
+        List<Sala> filtro = data.SalaDAO.readAll();
         return filtro;
     }
 
     public Proyeccion proyecEspec(int id) throws Exception {
-        Proyeccion proyeccion = proyecciones.readProyeccion(id);
+        Proyeccion proyeccion = data.ProyeccionDAO.readProyeccion(id);
         return proyeccion;
     }
     
     public List<Proyeccion> proyecsTodas() throws Exception {
-        List<Proyeccion> proyeccion = proyecciones.readAll();
+        List<Proyeccion> proyeccion = data.ProyeccionDAO.readAll();
         return proyeccion;
     }
 
     public List<Proyeccion> proyecsPeli(String pelicula) throws Exception {
-        List<Proyeccion> todas = proyecciones.readAll();
+        List<Proyeccion> todas = data.ProyeccionDAO.readAll();
         List<Proyeccion> filtro = new ArrayList<>();
         for(Proyeccion p : todas){
             if(p.getPelicula().getNombre().equals(pelicula)){
@@ -102,17 +89,17 @@ public class Service {
     }
     
     public List<Proyeccion> todas() throws Exception {
-        List<Proyeccion> todas = proyecciones.readAll();
+        List<Proyeccion> todas = data.ProyeccionDAO.readAll();
         return todas;
     }
 
     public void proyeccionAdd(Proyeccion p) throws Exception {
-        proyecciones.add(p); 
+        data.ProyeccionDAO.add(p); 
     }
 
     public List<Butaca> butacasSala(String sala) throws Exception {
         int s = Integer.parseInt(sala);
-        List<Butaca> todas = butacas.readAll();
+        List<Butaca> todas = data.ButacaDAO.readAll();
         List<Butaca> filtro = new ArrayList<>();
         for(Butaca b : todas){
             if(b.getSala().getId() == s){
@@ -123,17 +110,17 @@ public class Service {
     }
 
     public Butaca butacaEspec(int id) throws Exception{
-        Butaca butaca = butacas.readButaca(id);
+        Butaca butaca = data.ButacaDAO.readButaca(id);
         return butaca;
     }
 
     public void butacaAdd(Butaca b) throws Exception{
-        butacas.add(b);
+        data.ButacaDAO.add(b);
     }
 
 
     public List<Compra> comprasCli(String id) throws Exception {
-        List<Compra> todas = compras.readAll();
+        List<Compra> todas = data.CompraDAO.readAll();
         List<Compra> filtro = new ArrayList<>();
         for(Compra c : todas){
             if(c.getCliente().getId().equals(id)){
@@ -144,46 +131,52 @@ public class Service {
     }
 
     public Compra compraEspec(int id) throws Exception {
-        List<Compra> todas = compras.readAll();
-        for(Compra c : todas){
-            if(c.getProyeccion().getId() == id){
-                return c;
-            }
-        }
-        return null; 
+        Compra compra = data.CompraDAO.readCompra(id);
+        return compra;
     }
 
     public void compraAdd(Compra c) throws Exception{
-        compras.add(c);
+        data.CompraDAO.add(c);
     }
 
     public List<Pelicula> peliculaSearch(String nombre) throws Exception {
         List<Pelicula> result = new ArrayList<>();
-        List<Pelicula> todas = peliculas.readAll();
+        List<Pelicula> todas = data.PeliculaDAO.readAll();
         for(Pelicula p: todas){
-            if(p.getNombre().contains(nombre) && p.getEstado().equals("en cartelera")) {
+            if(p.getNombre().contains(nombre)) {
                 result.add(p);
             } 
         }
         return result;
-    } 
+    }
+    
+    public List<Pelicula> getCartelera() throws Exception{
+        List<Pelicula> result = new ArrayList<>();
+        List<Pelicula> todas = data.PeliculaDAO.readAll();
+        for(Pelicula p : todas){
+            if(p.getEstado().equals("en cartelera")){
+                result.add(p);
+            }
+        }
+        return result;
+    }
 
     public Pelicula pelicEspec(String nombre) throws Exception {
-        Pelicula p = peliculas.readPelicula(nombre);
+        Pelicula p = data.PeliculaDAO.readPelicula(nombre);
         return p;
     }
 
     public void peliculaAdd(Pelicula p) throws Exception {
-        peliculas.add(p);
+        data.PeliculaDAO.add(p);
     }
 
     public void peliculaUpdate(Pelicula p) throws Exception {
-        Pelicula peli = peliculas.readPelicula(p.getNombre());
+        Pelicula peli = data.PeliculaDAO.readPelicula(p.getNombre());
         if(peli.getEstado().equals("en cartelera")){
             peli.setEstado("bloqueada");
         }else{
             peli.setEstado("en cartelera");
         }
-        peliculas.updatePeli(peli);
+        data.PeliculaDAO.updatePeli(peli);
     }
 }

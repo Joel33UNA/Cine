@@ -19,7 +19,7 @@ import logic.Usuario;
 
 public class UsuarioDAO {
     
-    public Usuario read(String id, String clave) throws Exception{
+    public static Usuario read(String id, String clave) throws Exception{
         String sql="select * from usuarios where id=%s and clave=%s";
         sql = String.format(sql, id, clave);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -32,7 +32,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Usuario readAll() throws Exception{
+    public static Usuario readAll() throws Exception{
         String sql="select * from usuarios";
         sql = String.format(sql);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -45,7 +45,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Usuario readUsuario(String id) throws Exception{
+    public static Usuario readUsuario(String id) throws Exception{
         String sql = "select* from usuarios where id=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -58,7 +58,7 @@ public class UsuarioDAO {
         }
     }
     
-    public void add(Usuario u) throws Exception{
+    public static void add(Usuario u) throws Exception{
         String sql1 = "insert into usuarios values ('%s', '%s', '%s' ,'%s')";
         sql1 = String.format(sql1, u.getId(), u.getClave(), u.getRol(), u.getNombre());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql1);
@@ -78,7 +78,7 @@ public class UsuarioDAO {
         }
     }
     
-    public List<Usuario> filtrarUsuarios(String nombre) throws Exception{
+    public static List<Usuario> filtrarUsuarios(String nombre) throws Exception{
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "select* from usuarios where nombre like '%s'";
         sql = String.format(sql, nombre);;
@@ -90,7 +90,7 @@ public class UsuarioDAO {
         return usuarios;
     }
     
-    public Administrador readAdministrador(String id) throws Exception{
+    public static Administrador readAdministrador(String id) throws Exception{
         String sql = "select* from administradores, usuarios where "
                 + "administradores.id = usuarios.id and administradores.id=%s";
         sql = String.format(sql,id);
@@ -104,7 +104,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Cliente readCliente(String id) throws Exception{
+    public static Cliente readCliente(String id) throws Exception{
         String sql = "select* from clientes, usuarios where "
                 + "clientes.id = usuarios.id and clientes.id=%s";
         sql = String.format(sql, id);
@@ -118,7 +118,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Usuario from (ResultSet rs){
+    public static Usuario from (ResultSet rs){
         try {
             String rol = rs.getString("rol");
             Usuario r = null;
@@ -136,7 +136,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Administrador fromAdministrador(ResultSet rs){
+    public static Administrador fromAdministrador(ResultSet rs){
         try{
             Administrador r = new Administrador();
             r.setRol("administrador");
@@ -150,7 +150,7 @@ public class UsuarioDAO {
         }
     }
     
-    public Cliente fromCliente (ResultSet rs){
+    public static Cliente fromCliente (ResultSet rs){
         try {
             Cliente r = new Cliente();
             r.setId(rs.getString("id"));

@@ -8,6 +8,7 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package presentation;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import logic.Service;
 import logic.Usuario;
 
+@PermitAll
 @Path("/sesiones")
 public class Sesiones {
     

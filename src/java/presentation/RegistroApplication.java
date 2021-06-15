@@ -8,6 +8,7 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package presentation;
 
+import Filter.RestfulFilter;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
@@ -29,6 +30,7 @@ public class RegistroApplication extends Application {
         classes.add(Compras.class);
         classes.add(Butacas.class);
         classes.add(Sesiones.class);
+        classes.add(RestfulFilter.class);
         return classes;
     }   
 }

@@ -9,6 +9,7 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 package presentation;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -36,6 +37,7 @@ public class Salas {
     }
     
     @POST
+    @RolesAllowed({"administrador"})
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Sala s) {  
         try {

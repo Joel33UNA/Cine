@@ -20,7 +20,7 @@ import logic.Sala;
 
 public class SalaDAO {
     
-    public List<Sala> readAll() throws Exception{
+    public static List<Sala> readAll() throws Exception{
         List<Sala> sa = new ArrayList<>();
         String sql = "select* from salas";
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -31,7 +31,7 @@ public class SalaDAO {
         return sa;
     }
     
-    public Sala readSala(String nombre) throws Exception{
+    public static Sala readSala(String nombre) throws Exception{
         String sql = "select* from salas where nombre='%s'";
         sql = String.format(sql, nombre);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -44,7 +44,7 @@ public class SalaDAO {
         }
     }
     
-    public Sala readSalaById(int id) throws Exception{
+    public static Sala readSalaById(int id) throws Exception{
         String sql = "select* from salas where id=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
@@ -57,7 +57,7 @@ public class SalaDAO {
         }
     }
     
-    public void add(Sala s) throws Exception{
+    public static void add(Sala s) throws Exception{
         String sql1 = "insert into salas (filas, columnas, nombre) values (%s ,%s, '%s')";
         sql1 = String.format(sql1, s.getFilas(), s.getColumnas(), s.getNombre());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql1);
@@ -66,26 +66,14 @@ public class SalaDAO {
         }
     }
     
-    public List<Butaca> readButacas(int id) throws Exception{
-        List<Butaca> bu = new ArrayList<>();
-        String sql = "select* from butacas where id_sala=%s";
-        sql = String.format(sql, id);
-        PreparedStatement stm = Connection.instance().prepareStatement(sql);
-        ResultSet rs = Connection.instance().executeQuery(stm);
-        while(rs.next()){
-            bu.add(fromButaca(rs));
-        }
-        return bu;
-    }
-    
-    public Sala from (ResultSet rs){
+    public static Sala from (ResultSet rs){
         try {
             Sala r = new Sala();
             r.setId(rs.getInt("id"));
             r.setFilas(rs.getInt("filas"));
             r.setColumnas(rs.getInt("columnas"));
             r.setNombre(rs.getString("nombre"));
-            r.setButacas(readButacas(r.getId()));
+            r.setButacas(data.SalaDAO.readButacaBySala(r.getId()));
             return r;
         } catch (SQLException ex) {
             return null;
@@ -94,13 +82,23 @@ public class SalaDAO {
         }
     }
     
-    public Butaca fromButaca (ResultSet rs) throws Exception{
+    public static List<Butaca> readButacaBySala(int id) throws Exception{
+        List<Butaca> butacas = new ArrayList<>();
+        String sql = "select* from butacas where id_sala=%s";
+        sql = String.format(sql, id);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        while(rs.next()){
+            butacas.add(fromButacas(rs));
+        }
+        return butacas;
+    }
+    
+    public static Butaca fromButacas (ResultSet rs) throws Exception{
         try {
-            Sala s = new Sala();
             Butaca r = new Butaca();
-            r.setColumna(rs.getInt("columna"));
             r.setFila(rs.getInt("fila"));
-            r.setSala(s);
+            r.setColumna(rs.getInt("columna"));
             return r;
         } catch (SQLException ex) {
             return null;

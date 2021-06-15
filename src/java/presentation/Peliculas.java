@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
@@ -46,6 +48,18 @@ public class Peliculas {
         }
     } 
     
+    @PermitAll
+    @GET
+    @Path("cartelera")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Pelicula> getCartelera() { 
+        try {
+            return Service.instancia().getCartelera();
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    } 
+    
     @GET
     @Path("{nombre}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -57,6 +71,7 @@ public class Peliculas {
         }
     }
     
+    @PermitAll
     @GET
     @Path("{nombre}/imagen")
     @Produces("image/png")
@@ -66,6 +81,7 @@ public class Peliculas {
         return response.build();
     }    
     
+    @RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Path("{nombre}/imagen")
@@ -85,7 +101,7 @@ public class Peliculas {
         }
     }
 
-    
+    @RolesAllowed("administrador")
     @POST
     @Path("agregar")
     @Consumes(MediaType.APPLICATION_JSON) 
@@ -97,7 +113,7 @@ public class Peliculas {
         }
     }
     
-    
+    @RolesAllowed("administrador")
     @PUT
     @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)

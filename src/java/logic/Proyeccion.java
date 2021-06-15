@@ -28,7 +28,7 @@ public class Proyeccion {
 
     public Proyeccion(int id, Sala sala, Pelicula pelicula, String fecha, double precio) {
         this.id = id;
-        this.sala = sala;
+        this.sala = sala; 
         this.pelicula = pelicula;
         this.fecha = fecha;
         this.precio = precio;

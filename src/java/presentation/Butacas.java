@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.NotAcceptableException;
@@ -34,9 +35,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+@PermitAll
 @Path("/butacas")
 public class Butacas {
-   
+    
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Butaca> search(@DefaultValue("") @QueryParam("id_sala") String sala) { 
@@ -58,8 +60,7 @@ public class Butacas {
         }
     }
     
-    
-    @POST
+    /*@POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Butaca b) {  
         try {
@@ -67,5 +68,5 @@ public class Butacas {
         } catch (Exception ex) {
             throw new NotAcceptableException(); 
         }
-    }
+    }*/
 }

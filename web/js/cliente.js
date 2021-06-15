@@ -15,25 +15,15 @@ var url = "http://localhost:8080/Cine/";
 var butacas = new Array();
 var butaca = { fila: 0, columna:0, sala:null };
 var proyeccion = { id:0, sala:null, pelicula:null, fecha:"", precio:0 };
-var compra = {id:0, cliente: null, proyeccion: null, total: 0};
+//var compra = {id:0, cliente: null, proyeccion: null, total: 0};
+var compras = new Array();
 
 function resetCompra(){
     butaca = {id:0, cliente: null, proyeccion: null, total: 0};
 }
 
-async function recuperarCompra(){
-    let request = new Request(url+'api/compras'+proyeccion.id, {method: 'GET', headers: { }});
-    const response = await fetch(request);
-    if (!response.ok){ return; }
-    compra = await response.json();
-    renderButacas();
-}
-
-async function loadInfoCompra(){
-    let request = new Request(url+'proyecciones'+proyeccion.id, {method: 'GET', headers: { }});
-    let response = await fetch(request);
-    if (!response.ok) {errorMessage(response.status,$("#body #errorDiv"));return;}
-    proyeccion = await response.json();
+function showCompra(proy, peli){
+    $('#text-regiButacas-msg').val(peli.nombre);
     var div = $("#popupbutacas");
     div.html("<div class='modal fade' id='add-modal-butacas' tabindex='-1' role='dialog'>" + 
             "<div class='modal-dialog' style='width: 400px'>" + 
@@ -91,25 +81,34 @@ async function loadInfoCompra(){
             "</div>" +              
         "</div>");
     var peliSala = $("#text-regiButacas-msg");
-    var descr = $("<p />", { "value":proyeccion.pelicula.nombre + " - " + proyeccion.fecha + " / "+ proyeccion.sala.nombre });
+    var descr = $("<p />", { "value":peli.nombre + " - " + proy.fecha + " / "+ proy.sala.nombre });
     peliSala.append(descr);
     var pelIma = $("#imagenPro");
-    var foto = $("<img />", { "src":url+"api/peliculas/"+proyeccion.pelicula.nombre+"/imagen" });
+    var foto = $("<img />", { "src":url+"api/peliculas/"+peli.nombre+"/imagen" });
     pelIma.append(foto);
     var proyePrecio = $("#precioPro");
-    var pre = $("<p />", { "value":proyeccion.precio });
+    var pre = $("<p />", { "value":proy.precio });
     proyePrecio.append(pre);
     var rows = $("#allRows");
     var asiento;
     var row;
-    for(var i = 0; i < proyeccion.sala.filas; i++){
+    var comprasProy = new Array();
+    compras.forEach(function(c){
+        if(compras.find(function(c){return c.proyeccion.id == proy.id})){
+            comprasProy.push(c);
+        } 
+    });
+    for(var i = 0; i < proy.sala.filas; i++){
         row = $("<div />", { "class": "row" });
-        for(var j = 0; j < proyeccion.sala.columnas; j++){
-            if(compra.proyeccion.sala.id == butaca.sala.id){
-                asiento = $("<div />", {"class": "seat ocupado"});
-            }else{
-                asiento = $("<div />", {"class": "seat disponible"});
-            }
+        for(var j = 0; j < proy.sala.columnas; j++){
+            comprasProy.forEach(function(f){
+                if(compra.proyeccion.sala.id == butaca.sala.id){
+                    asiento = $("<div />", {"class": "seat ocupado"});
+                }else{
+                    asiento = $("<div />", {"class": "seat disponible"});
+                }
+            });
+            
             row.append(asiento);
         }
     rows.append(row);
@@ -119,7 +118,7 @@ async function loadInfoCompra(){
     for(var i=0;i<seats.length;i++){
         var item=seats[i];
         item.addEventListener("click",(event)=>{
-        var price = proyeccion.precio;
+        var price = proy.precio;
         if (!event.target.classList.contains('ocupado')){
             count++;
             var total=count*price;
@@ -134,45 +133,42 @@ async function loadInfoCompra(){
             document.getElementById("count").innerText=count;
             document.getElementById("total").innerText=total;
         }
-        })
+        });
     }
+    $('#add-modal-butacas').modal('show');
 }
 
-function validarAddCompra(){
-    var error = false;
-    $("#formulario2 input").removeClass("invalid");
-    error |= $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).length>0;        
-    $("#formulario2 input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
-    error |= !Number.isInteger(Number.parseInt($('#precio').val()));
-    if(!Number.isInteger(Number.parseInt($('#precio').val()))){
-       Number.isInteger(Number.parseInt($('#precio').addClass("invalid")));
-    }
-    return !error;
+function pintarButacas(){
+    
 }
 
-async function addCompra(){    
-    proyeccion.sala = salas.find(function(s){return(s.id==$("#salas").val())});
-    proyeccion.pelicula = peliculas.find(function(p){return(p.id==$('#pelicula').val())});
-    proyeccion.fecha = $('#fecha').val();
-    proyeccion.precio = Number.parseInt($('#precio').val());
-    if(!validarAddShow()) return;
-    let request = new Request(url + "api/proyecciones",
-                            {method:'POST',
-                            headers: { 'Content-Type': 'application/json'},
-                            body: JSON.stringify(Butaca)});
+/*function list(){
+    $("#listado").html("");
+    personas.forEach( (p)=>{row($("#listado"),p);});	
+  }  
+  
+  function row(listado,persona){
+	var tr =$("<tr />");
+	tr.html("<td>"+persona.cedula+"</td>"+
+                "<td>"+persona.nombre+"</td>"+
+                "<td><img src='images/"+persona.sexo+".png' class='icon' ></td>"+
+                "<td><img src='"+url+"api/personas/"+persona.cedula+"/imagen' class='icon_large' ></td>"+                
+                "<td id='edit'><img src='images/edit.png'></td>");
+        tr.find("#edit").on("click",()=>{edit(persona.cedula);});
+	listado.append(tr);           
+  }*/
+
+async function recuperarCompras(){
+    let request = new Request(url+'api/compras', {method: 'GET', headers: { }});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    listButacas();
+    compras = await response.json();
 }
 
-function showIngresoCompra(){
-    resetCompra();
-    renderCompra();
-}
-
-async function fetchAndListCompra(){
-    listCompras();
-    loadInfoCompra();
+function fetchAndListShows(){
+    //listAllShows();
+    recuperarCompras();
+    showCompra();
 }
 
 
@@ -196,8 +192,3 @@ function loaded(){ //async00
 }
 
 $(loaded);
-
-
-//==============================================================================================================
-//================    COMPRA    ===============================================================================
-//==============================================================================================================
