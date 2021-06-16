@@ -88,7 +88,7 @@ function showCompra(){
                                             "<small class='status' style='font-size: 1em;'>Seleccionado</small>"+
                                     "</li>"+ 
                                     "<li>"+
-                                        "<div id='seat' class='seat occuped'></div>"+
+                                        "<div id='seat' class='seat occupied'></div>"+
                                             "<small class='status' style='font-size: 1em;'>Ocupado</small>"+
                                     "</li>"+
                                 "</ul>"+
@@ -101,7 +101,7 @@ function showCompra(){
                                     "</div>"+
                                 "</div>"+
                                 "<p class='text' style='font-size: 1em;margin:0px 0px 15px 0px'>Usted ha seleccionado "+
-                                    "<span id='count'>0</span> butacas por el precio de " +
+                                    "<span id='count'>0</span> butacas por el precio de ₡" +
                                     "<span id='total'>0</span>" +
                                 "</p>"+
                             "</div>" +
@@ -139,13 +139,18 @@ function showCompra(){
     for(var i = 0; i < proy.sala.filas; i++){
         var row = $("<div />", { "class": "row" });
         for(var j = 0; j < proy.sala.columnas; j++){
-            comprasProy.forEach(function(c){
-                if(c.proyeccion.sala.id == sala.id){
-                    asiento = $("<div />", {"class": "seat ocupado"});
-                }else{
-                    asiento = $("<div />", {"class": "seat disponible"});
-                }
-            });
+            if(compras.length === 0){
+                asiento = $("<div />", {"class": "seat"});
+            }
+            else{
+                comprasProy.forEach(function(c){
+                    if(c.proyeccion.sala.id == sala.id){
+                        asiento = $("<div />", {"class": "seat occupied"});
+                    }else{
+                        asiento = $("<div />", {"class": "seat"});
+                    }
+                });
+            }
             row.append(asiento);
         }
     rows.append(row);
@@ -156,10 +161,9 @@ function showCompra(){
         var item=seats[i];
         item.addEventListener("click",(event)=>{
         var price = proy.precio;
-        if (!event.target.classList.contains('occuped')){
+        if (!event.target.classList.contains('occupied')){
             count++;
             var total=count*price;
-            var estado;
                         // PREGUNTAR!!!
             if(event.target.classList.contains("selected")){
                 event.target.setAttribute("class", "seat");
