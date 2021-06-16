@@ -33,9 +33,10 @@ async function listAllShows(){
         div.append(div2); 
         peli.proyecciones.forEach(function(proy){
             var li = $("<li />");
-            li.html("<a href='#' role='button' id='comprar'>" + proy.fecha + "</a>");
+            li.html("<a href='#' role='button' class='comprar'>" + proy.fecha + "</a>");
             $(".downdiv ul").append(li);
-            $('#comprar').click(showLogin());
+            $('.comprar').on("click", showLogin);
+            sessionStorage.setItem("proy", JSON.stringify(proy));
         });
     });
 }
@@ -147,7 +148,7 @@ function showLogin(){
 
 function loadLogin(){
     var div = $("#popuplogin");
-    div.html("<div class='modal fade' id='add-modal-login' tabindex='-1' role'dialog'>" +
+    div.html("<div class='modal fade' id='add-modal-login' tabindex='-1' role='dialog'>" +
                 "<div class='modal-dialog' style='width: 400px'>" +
                     "<div class='modal-content'>" +
                         "<div class='modal-header'>" +

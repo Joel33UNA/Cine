@@ -9,6 +9,7 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 package presentation;
 
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -22,10 +23,12 @@ import javax.ws.rs.core.MediaType;
 import logic.Sala;
 import logic.Service;
 
+@PermitAll
 @Path("/salas")
 public class Salas {
     
     @GET
+    @PermitAll
     @Produces({MediaType.APPLICATION_JSON})
     public List<Sala> searchAll() { 
         try{

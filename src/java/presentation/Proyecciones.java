@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -35,7 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-
+@PermitAll
 @Path("/proyecciones")
 public class Proyecciones {
     String location="C:/imagenesProyecto/proyecciones/";
@@ -72,7 +73,6 @@ public class Proyecciones {
         }
     } 
     
-    @RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Proyeccion p) {  

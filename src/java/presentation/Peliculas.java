@@ -34,10 +34,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+@PermitAll
 @Path("/peliculas")
 public class Peliculas {
     String location="C:/imagenesProyecto/peliculas/";
     
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Pelicula> search(@DefaultValue("") @QueryParam("nombre") String nombre) { 
