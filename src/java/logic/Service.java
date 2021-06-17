@@ -172,7 +172,7 @@ public class Service {
     }
 
     public void peliculaUpdate(Pelicula p) throws Exception {
-        Pelicula peli = data.PeliculaDAO.readPelicula(p.getNombre());
+        Pelicula peli = data.PeliculaDAO.readPeliculaById(p.getId());
         if(peli.getEstado().equals("en cartelera")){
             peli.setEstado("bloqueada");
         }else{

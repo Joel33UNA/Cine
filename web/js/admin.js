@@ -330,8 +330,21 @@ function listMovie(listado, movie){
     div.html("<div class='updiv'><img src='"+url+"api/peliculas/"+movie.nombre+"/imagen' ></div>"+
             "<div class='downdiv'>" +  
                 "<p>" + movie.nombre + "</p>" +
+                "<a href='#' role='button' id='" + movie.id + "'>" + movie.estado + "</a>" +
             "</div>");
     listado.append(div);
+    $("#" + movie.id).click(cambiarEstado);
+}
+
+async function cambiarEstado(){
+    var id = event.target.id;
+    pelicula = peliculas.find(function(p){ return p.id == id });
+    let request = new Request(url + "api/peliculas/actualizar",
+                             {method: 'PUT', headers: { 'Content-Type': 'application/json'},
+                              body: JSON.stringify(pelicula)});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    fetchAndListMovies();
 }
 
 function renderMovies(){
