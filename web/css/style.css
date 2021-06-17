@@ -230,7 +230,8 @@ p.text {
 }
 
 p.text span {
-    color: darkred;
+    color: limegreen;
+    font-weight: bold
 }
 
 .status{

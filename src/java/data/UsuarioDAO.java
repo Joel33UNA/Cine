@@ -157,7 +157,7 @@ public class UsuarioDAO {
             r.setNombre(rs.getString("nombre"));
             r.setRol(rs.getString("rol"));
             r.setClave(rs.getString("clave"));
-            r.setNumTarjeta(rs.getString("numTarjeta"));
+            //r.setNumTarjeta(rs.getString("numTarjeta"));
             return r;
         } catch (SQLException ex) {
             return null;

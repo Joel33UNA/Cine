@@ -138,6 +138,7 @@ function renderShows(){
     $('#agregarproyeccion').off('click').on('click', addShow);
     $("#add-modal-show #errorDiv").html("");       
     $('#add-modal-show').modal('show');
+    $("#agregarproyeccion").prop('disabled', false);
 }
 
 function renderShow(){
@@ -280,6 +281,7 @@ async function addShow(){
     const response = await fetch(request);
     if (!response.ok){ return; }
     listShow();
+    $("#agregarproyeccion").prop('disabled', true);
 }
 
 function showIngresoProyecciones(){
@@ -443,6 +445,7 @@ async function registraPeli(){
     $("#add-modal #errorDiv").html('<div class="alert alert-success fade show">' +
             '<button type="button" class="close" data-dismiss="alert">' +
             '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha agregado con éxito'+'</div>');
+    $("#regPel").prop('disabled', true);
 }
 
 function addImagen(){

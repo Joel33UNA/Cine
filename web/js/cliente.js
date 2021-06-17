@@ -263,7 +263,8 @@ function renderCompras(){
                 "<thead>" +
                     "<tr>" +
                         "<th scope='col'>Proyección/Película</th>" +
-                        "<th scope='col'>Fecha</th>" +
+                        "<th scope='col'>Fecha/Hora</th>" +
+                        "<th scope='col'>Cantidad de butacas</th>" +
                         "<th scope='col'>Total</th>" +
                     "</tr>" +
                 "</thead>" +
@@ -274,6 +275,7 @@ function renderCompras(){
         var tr = $("<tr />");
         tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
                 "<td>" + compra.proyeccion.fecha + "</td>" +
+                "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
                 "<td>" + compra.precio_total + "</td>");
         tbody.append(tr);
     });
