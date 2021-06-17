@@ -42,9 +42,9 @@ public class Compras {
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Compra> getComprasCli(@DefaultValue("") @QueryParam("cliente") String cliente) { 
+    public List<Compra> getComprasAll() { 
         try {
-            return Service.instancia().comprasCli(cliente);
+            return Service.instancia().comprasAll();
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
@@ -53,9 +53,9 @@ public class Compras {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Compra get(@PathParam("id") int proyeccion) {
+    public List<Compra> get(@PathParam("id") String id) {
         try {
-            return Service.instancia().compraEspec(proyeccion);
+            return Service.instancia().comprasCli(id);
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }

@@ -31,7 +31,7 @@ async function listAllShows(){
     peliculas.forEach(function(peli){
         var div2 = $("<div />", {"class":"father"});
         div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
-                 "<div class='downdiv'>" +  
+                 "<div class='downdiv' id='" + peli.id +"'>" +  
                     "<p>" + peli.nombre + "</p>" +
                     "<ul></ul>" +
                  "</div>");
@@ -39,7 +39,7 @@ async function listAllShows(){
         peli.proyecciones.forEach(function(proy){
             var li = $("<li />");
             li.html("<a href='#' role='button' class='comprar' id='" + proy.id +"'>" + proy.fecha + "</a>");
-            $(".downdiv ul").append(li);
+            $("#" + peli.id + ".downdiv ul").append(li);
         });
     });
     $('.comprar').click(showCompra);
@@ -209,7 +209,12 @@ async function comprar(){
     compra.proyeccion = proy;
     compra.butacas = butacas;
     compra.cliente = JSON.parse(sessionStorage.getItem('user'));
-    if(!validarCompra()) return;
+    if(!validarCompra()){
+        $("#add-modal-butacas #errorDiv").html('<div class="alert alert-danger fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Error!</h4>'+'Ha ocurrido un error!'+'</div>'); 
+        return;
+    }
     let request = new Request(url + "api/compras",
                             {method:'POST',
                             headers: { 'Content-Type': 'application/json'},
@@ -223,21 +228,64 @@ async function comprar(){
     $("#add-modal-butacas #errorDiv").html('<div class="alert alert-success fade show">' +
             '<button type="button" class="close" data-dismiss="alert">' +
             '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha realizado su compra'+'</div>'); 
+    $("#agregarCompra").prop('disabled', true);
 }
 
 function validarCompra(){
     var error = false;
+    var seleccionado = false;
+    for(let i = 0; i < proy.sala.filas; i++){
+        for(let j = 0; j < proy.sala.columnas; j++){
+            var asiento = $("#" + i + ".row > #" + j + ".seat");
+            if(asiento.attr("class") == "seat selected"){
+                seleccionado = true;
+            }
+        }
+    }
+    if(!seleccionado) error = true;
     $("#tarjeta").removeClass("invalid");
     error |= $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;        
     $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
     return !error;
-  }
+}
+   
 
 async function recuperarCompras(){
     let request = new Request(url+'api/compras', {method: 'GET', headers: { }});
     const response = await fetch(request);
     if (!response.ok){ return; }
     compras = await response.json();
+}
+
+function renderCompras(){
+    var div = $("#body").html("");
+    div.html("<table class='table table-striped' id='tablacompras'>" +
+                "<thead>" +
+                    "<tr>" +
+                        "<th scope='col'>Proyección/Película</th>" +
+                        "<th scope='col'>Fecha</th>" +
+                        "<th scope='col'>Total</th>" +
+                    "</tr>" +
+                "</thead>" +
+                "<tbody></tbody>" +
+             "</table>");
+    var tbody = $("#tablacompras tbody");
+    compras.forEach(function(compra){
+        var tr = $("<tr />");
+        tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
+                "<td>" + compra.proyeccion.fecha + "</td>" +
+                "<td>" + compra.precio_total + "</td>");
+        tbody.append(tr);
+    });
+}
+
+async function fetchAndListCompras(){
+    var usuario = JSON.parse(sessionStorage.getItem('user'));
+    let request = new Request(url+'api/compras/' + usuario.id, {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    compras = await response.json();
+    renderCompras();
 }
 
 function fetchAndListShows(){
@@ -256,16 +304,13 @@ function signoff(){
 }
 
 function loadNav(){
-    //$("#purchases").click(cargarCompras);
+    $("#purchases").click(fetchAndListCompras);
     $("#signoff").click(signoff);
 }
 
 function loaded(){ //async00
     loadNav();
     fetchAndListShows();
-    if(proy = JSON.parse(sessionStorage.getItem("proy"))){
-        
-    }
 }
 
 $(loaded);

@@ -15,7 +15,7 @@ var url = "http://localhost:8080/Cine/";
 var salas = new Array();
 var sala = { filas: 0, columnas:0, nombre:"", id:0 };
 
-async function listRooms(){
+async function fetchAndListRooms(){
     let request = new Request(url+'api/salas', {method: 'GET', headers: { }});
     const response = await fetch(request);
     if (!response.ok){ return; }
@@ -109,7 +109,7 @@ async function addRoom(){
                             body: JSON.stringify(sala)});
     const response = await fetch(request);
     if (!response.ok){ return; }
-    listRooms();
+    fetchAndListRooms();
 }
 
 
@@ -148,7 +148,7 @@ function renderShow(){
                 "<thead>" +
                     "<tr>" +
                         "<th scope='col'>ID</th>" +
-                        "<th scope='col'>Nombre</th>" +
+                        "<th scope='col'>Película</th>" +
                         "<th scope='col'>Sala</th>" +
                         "<th scope='col'>Precio</th>" +
                         "<th scope='col'>Fecha</th>" +
@@ -487,7 +487,7 @@ function signoff(){
 
 function loadNav(){
     $("#addmovie").click(fetchAndListMovies);
-    $("#addroom").click(listRooms);
+    $("#addroom").click(fetchAndListRooms);
     $("#addshow").click(fetchAndListShows);
     $("#signoff").click(signoff);
 }

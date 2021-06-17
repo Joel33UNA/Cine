@@ -43,7 +43,7 @@ function navClient(){
             "<div class='collapse navbar-collapse' id='navbarSupportedContent'>" +
                 "<ul class='navbar-nav mr-auto'>" +
                     "<li class='nav-item'>" +
-                        "<a class='btn btn-light' href='/Cine/'>Inicio</a>" +
+                        "<a class='btn btn-light' href='/Cine/presentation/cliente.html'>Inicio</a>" +
                     "</li>" +
                     "<li class='nav-item'>" +
                         "<a class='btn btn-light' href='#' role='button' id='purchases'>Ver compras</a>" +

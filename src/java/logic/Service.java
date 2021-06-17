@@ -115,6 +115,10 @@ public class Service {
         data.ButacaDAO.add(b);
     }
 
+    public List<Compra> comprasAll() throws Exception{
+        List<Compra> compras = data.CompraDAO.readAll();
+        return compras;
+    }
 
     public List<Compra> comprasCli(String id) throws Exception {
         List<Compra> todas = data.CompraDAO.readAll();
@@ -125,11 +129,6 @@ public class Service {
             }
         }
         return filtro;    
-    }
-
-    public Compra compraEspec(int id) throws Exception {
-        Compra compra = data.CompraDAO.readCompra(id);
-        return compra;
     }
 
     public void compraAdd(Compra c) throws Exception{

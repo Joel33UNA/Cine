@@ -8,11 +8,14 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package data;
 
+import static data.PeliculaDAO.from;
+import static data.PeliculaDAO.readProyeccionesByPelicula;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import logic.Pelicula;
 import logic.Proyeccion;
 import logic.Sala;
 
@@ -68,12 +71,39 @@ public class ProyeccionDAO {
     public static Proyeccion from (ResultSet rs) throws Exception{
         try {
             Proyeccion r = new Proyeccion();
+            Pelicula p = new Pelicula();
             Sala s = new Sala();
             r.setId(rs.getInt("id"));
             r.setPrecio(rs.getDouble("precio"));
             s = data.SalaDAO.readSalaById(rs.getInt("id_sala"));
-            r.setFecha(rs.getString("fecha")); 
+            r.setFecha(rs.getString("fecha"));
+            r.setPelicula(readPeliculaById(rs.getInt("id_pelicula")));
             r.setSala(s);
+            return r;
+        } catch (SQLException ex) {
+            return null;
+        }
+    }
+    
+    public static Pelicula readPeliculaById(int id) throws Exception{
+        String sql = "select* from peliculas where id=%s";
+        sql = String.format(sql, id);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        if(rs.next()){
+            return fromPelicula(rs);
+        }
+        else{
+            return null;
+        }
+    }
+    
+    public static Pelicula fromPelicula (ResultSet rs) throws Exception{
+        try {
+            Pelicula r = new Pelicula();
+            r.setId(rs.getInt("id"));
+            r.setNombre(rs.getString("nombre"));
+            r.setEstado(rs.getString("estado"));
             return r;
         } catch (SQLException ex) {
             return null;

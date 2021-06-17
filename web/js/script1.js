@@ -26,7 +26,7 @@ async function listAllShows(){
     peliculas.forEach(function(peli){
         var div2 = $("<div />", {"class":"father"});
         div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
-                 "<div class='downdiv'>" +  
+                 "<div class='downdiv' id='" + peli.id +"'>" +  
                     "<p>" + peli.nombre + "</p>" +
                     "<ul></ul>" +
                  "</div>");
@@ -34,7 +34,7 @@ async function listAllShows(){
         peli.proyecciones.forEach(function(proy){
             var li = $("<li />");
             li.html("<a href='#' role='button' class='comprar'>" + proy.fecha + "</a>");
-            $(".downdiv ul").append(li);
+            $("#" + peli.id + ".downdiv ul").append(li);
             $('.comprar').on("click", showLogin);
             sessionStorage.setItem("proy", JSON.stringify(proy));
         });
