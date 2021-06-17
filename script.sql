@@ -17,7 +17,6 @@ create table administradores(
 
 create table clientes(
     id varchar(45) not null,
-    numTarjeta varchar(45),
     primary key (id),
     foreign key (id) references usuarios(id)
 );
@@ -36,14 +35,6 @@ create table salas(
     nombre varchar(45),
     primary key(id),
     UNIQUE KEY(nombre)
-);
-
-create table butacas(
-    id_sala int,
-    fila int,
-    columna int,
-    primary key (id_sala, fila, columna),
-    foreign key (id_sala) references salas(id)
 );
 
 create table proyecciones(
@@ -66,5 +57,14 @@ create table compras(
     foreign key (id_cli) references clientes(id),
     foreign key (id_pro) references proyecciones(id)
 );
+
+create table butacas(
+    id_compra int,
+    fila int,
+    columna int,
+    primary key (id_compra, fila, columna),
+    foreign key (id_compra) references compras(id)
+);
+
 
 alter table usuarios add constraint usuarios_ck_rol check (rol in ('administrador','cliente'));

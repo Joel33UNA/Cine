@@ -126,6 +126,10 @@ footer{
   text-align: center;
 }
 
+#popupbutacas{
+    display: flex;
+}
+
 .main-logo{
     width:90%;
     max-width: 150px;
@@ -209,7 +213,7 @@ footer{
 }
 
 .row {
-    display: flex;
+    justify-content: center;
 }
 
 .screen {

@@ -49,8 +49,10 @@ public class SalaDAO {
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
+        Sala s;
         if(rs.next()){
-            return from(rs);
+            s = from(rs);
+            return s;
         }
         else{
             return null;
@@ -73,7 +75,6 @@ public class SalaDAO {
             r.setFilas(rs.getInt("filas"));
             r.setColumnas(rs.getInt("columnas"));
             r.setNombre(rs.getString("nombre"));
-            r.setButacas(data.SalaDAO.readButacaBySala(r.getId()));
             return r;
         } catch (SQLException ex) {
             return null;

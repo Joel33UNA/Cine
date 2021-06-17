@@ -11,18 +11,18 @@ package logic;
 public class Butaca {
     private int fila;
     private int columna;
-    private Sala sala;
+    private Compra compra;
     
     public Butaca(){
         this.fila = 0;
         this.columna = 0;
-        this.sala = new Sala();
+        this.compra = new Compra();
     }
 
-    public Butaca(int fila, int columna, Sala sala) {
+    public Butaca(int fila, int columna, Compra compra) {
         this.fila = fila;
         this.columna = columna;
-        this.sala = sala;
+        this.compra = compra;
     }
 
     public int getFila() {
@@ -41,11 +41,12 @@ public class Butaca {
         this.columna = columna;
     }
 
-    public Sala getSala() {
-        return sala;
+    public Compra getCompra() {
+        return compra;
     }
 
-    public void setSala(Sala sala) {
-        this.sala = sala;
+    public void setCompra(Compra compra) {
+        this.compra = compra;
     }
+
 }

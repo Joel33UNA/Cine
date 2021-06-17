@@ -39,7 +39,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class Peliculas {
     String location="C:/imagenesProyecto/peliculas/";
     
-    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Pelicula> search(@DefaultValue("") @QueryParam("nombre") String nombre) { 
@@ -50,7 +49,6 @@ public class Peliculas {
         }
     } 
     
-    @PermitAll
     @GET
     @Path("cartelera")
     @Produces({MediaType.APPLICATION_JSON})
@@ -73,7 +71,6 @@ public class Peliculas {
         }
     }
     
-    @PermitAll
     @GET
     @Path("{nombre}/imagen")
     @Produces("image/png")
@@ -83,7 +80,6 @@ public class Peliculas {
         return response.build();
     }    
     
-    @RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Path("{nombre}/imagen")
@@ -103,7 +99,6 @@ public class Peliculas {
         }
     }
 
-    @RolesAllowed("administrador")
     @POST
     @Path("agregar")
     @Consumes(MediaType.APPLICATION_JSON) 
@@ -115,7 +110,6 @@ public class Peliculas {
         }
     }
     
-    @RolesAllowed("administrador")
     @PUT
     @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)

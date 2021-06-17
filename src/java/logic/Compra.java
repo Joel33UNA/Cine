@@ -8,6 +8,8 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 package logic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Compra {
@@ -15,12 +17,14 @@ public class Compra {
     private Cliente cliente;
     private Proyeccion proyeccion;
     private double precio_total;
+    private List<Butaca> butacas;
     
     public Compra(){
         this.id = 0;
         this.precio_total = 0;
         this.cliente = new Cliente();
         this.proyeccion = new Proyeccion();
+        this.butacas = new ArrayList<>();
     }
 
     public Compra(int id, double precio_total, Cliente cliente, Proyeccion proyeccion) {
@@ -60,6 +64,14 @@ public class Compra {
 
     public void setPrecio_total(double precio_total) {
         this.precio_total = precio_total;
+    }
+
+    public List<Butaca> getButacas() {
+        return butacas;
+    }
+
+    public void setButacas(List<Butaca> butacas) {
+        this.butacas = butacas;
     }
 
     @Override

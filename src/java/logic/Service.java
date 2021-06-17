@@ -37,14 +37,7 @@ public class Service {
     
     public void agregarSala(Sala s) throws Exception{
         data.SalaDAO.add(s);
-        Sala salaRecuperada = data.SalaDAO.readSala(s.getNombre());
-        for(int i = 0; i < salaRecuperada.getFilas(); i++){
-            for(int j = 0; j < salaRecuperada.getColumnas(); j++){
-                Butaca butaca = new Butaca(i + 1, j + 1, salaRecuperada);
-                s.addButaca(butaca);
-                data.ButacaDAO.add(butaca);  
-            }
-        }
+
     }
     
     public Usuario buscarUsuario(String id) throws Exception{
@@ -96,13 +89,17 @@ public class Service {
     public void proyeccionAdd(Proyeccion p) throws Exception {
         data.ProyeccionDAO.add(p); 
     }
+    
+    public List<Butaca> butacasAll() throws Exception{
+        List<Butaca> todas = data.ButacaDAO.readAll();
+        return todas;
+    }
 
-    public List<Butaca> butacasSala(String sala) throws Exception {
-        int s = Integer.parseInt(sala);
+    public List<Butaca> butacasCompra(int compra) throws Exception {
         List<Butaca> todas = data.ButacaDAO.readAll();
         List<Butaca> filtro = new ArrayList<>();
         for(Butaca b : todas){
-            if(b.getSala().getId() == s){
+            if(b.getCompra().getId() == compra){
                 filtro.add(b);
             }
         }
@@ -123,7 +120,7 @@ public class Service {
         List<Compra> todas = data.CompraDAO.readAll();
         List<Compra> filtro = new ArrayList<>();
         for(Compra c : todas){
-            if(c.getCliente().getId().equals(id)){
+            if(c.getCliente().getId().contains(id)){
                 filtro.add(c);
             }
         }
@@ -137,6 +134,11 @@ public class Service {
 
     public void compraAdd(Compra c) throws Exception{
         data.CompraDAO.add(c);
+        Compra compra = data.CompraDAO.readLast();
+        for(Butaca b : c.getButacas()){
+            b.setCompra(compra);
+            data.ButacaDAO.add(b);
+        }
     }
 
     public List<Pelicula> peliculaSearch(String nombre) throws Exception {

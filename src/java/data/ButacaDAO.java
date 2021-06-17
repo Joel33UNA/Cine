@@ -14,16 +14,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import logic.Butaca;
+import logic.Compra;
 import logic.Sala;
 
 public class ButacaDAO {
     
     public static void add(Butaca b) throws Exception{
-        String sql = "insert into butacas (id_sala, fila, columna)"
+        String sql = "insert into butacas (id_compra, fila, columna)"
                 + " values (%s, %s, %s)";
-        sql = String.format(sql, b.getSala().getId(), b.getFila(), b.getColumna());
+        sql = String.format(sql, b.getCompra().getId(), b.getFila(), b.getColumna());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
-        if(Connection.instance().executeUpdate(stm1) == 0){
+         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Butaca ya existe");
         }
     }
@@ -52,9 +53,9 @@ public class ButacaDAO {
         }
     }
     
-    public static List<Butaca> readButacaBySala(int id) throws Exception{
+    public static List<Butaca> readButacaByCompra(int id) throws Exception{
         List<Butaca> butacas = new ArrayList<>();
-        String sql = "select* from butacas where id_sala=%s";
+        String sql = "select* from butacas where id_compra=%s";
         sql = String.format(sql, id);
         PreparedStatement stm = Connection.instance().prepareStatement(sql);
         ResultSet rs = Connection.instance().executeQuery(stm);
@@ -66,12 +67,9 @@ public class ButacaDAO {
     
     public static Butaca from (ResultSet rs) throws Exception{
         try {
-            Sala s = new Sala();
             Butaca r = new Butaca();
-            s = data.SalaDAO.readSalaById(rs.getInt("id_sala"));
             r.setFila(rs.getInt("fila"));
             r.setColumna(rs.getInt("columna"));
-            r.setSala(s);
             return r;
         } catch (SQLException ex) {
             return null;

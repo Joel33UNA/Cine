@@ -28,7 +28,6 @@ import logic.Service;
 public class Salas {
     
     @GET
-    @PermitAll
     @Produces({MediaType.APPLICATION_JSON})
     public List<Sala> searchAll() { 
         try{
@@ -40,7 +39,6 @@ public class Salas {
     }
     
     @POST
-    @RolesAllowed({"administrador"})
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Sala s) {  
         try {

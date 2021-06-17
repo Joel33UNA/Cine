@@ -75,7 +75,7 @@ function renderRooms(){
         var tr = $("<tr />");
         tr.html("<td>" + sala.id + "</td>" +
                 "<td>" + sala.nombre + "</td>" +
-                "<td>" + sala.butacas.length + "</td>");
+                "<td>" + sala.filas * sala.columnas + "</td>");
         tbody.append(tr);
     });
     $("#addroom").click(renderRooms);

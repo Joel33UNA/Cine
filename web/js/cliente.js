@@ -12,7 +12,11 @@ PROFESOR: JOSE SÁNCHEZ SALAZAR
 
 var url = "http://localhost:8080/Cine/";
 
-var butaca = { fila: 0, columna:0, sala:null };
+var peli;
+var proy;
+var butaca = { fila: 0, columna:0, compra:null };
+var compra = { cliente:null, proyeccion:null, precio_total:0, butacas:null };
+var butacas = new Array();
 var compras = new Array();
 var peliculas = new Array();
 
@@ -41,14 +45,16 @@ async function listAllShows(){
     $('.comprar').click(showCompra);
 }
 
-function resetCompra(){
-    butaca = {id:0, cliente: null, proyeccion: null, total: 0};
+function resetButaca(){
+    butaca = { fila: 0, columna:0, compra:null };
+}
+
+function resetButacas(){
+    butacas = new Array();
 }
 
 function showCompra(){
     var n = event.target.id;
-    var peli;
-    var proy;
     peliculas.forEach(function(pel){
        pel.proyecciones.forEach(function(pro){
           if(pro.id == n){ 
@@ -104,6 +110,10 @@ function showCompra(){
                                     "<span id='count'>0</span> butacas por el precio de ₡" +
                                     "<span id='total'>0</span>" +
                                 "</p>"+
+                                "<div class='form-group'>" +
+                                    "<label for='tarjeta'>Tarjeta</label>" +
+                                    "<input type='text' class='form-control' name='tarjeta' id='tarjeta' placeholder='Número de tarjeta'>" +
+                                "</div>" +
                             "</div>" +
                         "</div>" +
                     "</form>" +
@@ -137,68 +147,91 @@ function showCompra(){
         } 
     });
     for(var i = 0; i < proy.sala.filas; i++){
-        var row = $("<div />", { "class": "row" });
+        var row = $("<div />", { "class": "row", "id" : i });
         for(var j = 0; j < proy.sala.columnas; j++){
-            if(compras.length === 0){
-                asiento = $("<div />", {"class": "seat"});
-            }
-            else{
-                comprasProy.forEach(function(c){
-                    if(c.proyeccion.sala.id == sala.id){
-                        asiento = $("<div />", {"class": "seat occupied"});
-                    }else{
-                        asiento = $("<div />", {"class": "seat"});
-                    }
-                });
-            }
+            asiento = $("<div />", {"class": "seat", "id" : j});
             row.append(asiento);
         }
-    rows.append(row);
+        rows.append(row);
     }
+    comprasProy.forEach(function(c){
+        c.butacas.forEach(function(b){
+           asiento = $("#" + b.fila + ".row > #" + b.columna + ".seat"); 
+           asiento.removeClass();
+           asiento.addClass("seat occupied");
+        });
+    });
+    
     var count=0;
     var seats=document.getElementsByClassName("seat");
+    var total;
     for(var i=0;i<seats.length;i++){
         var item=seats[i];
         item.addEventListener("click",(event)=>{
-        var price = proy.precio;
-        if (!event.target.classList.contains('occupied')){
-            count++;
-            var total=count*price;
-                        // PREGUNTAR!!!
-            if(event.target.classList.contains("selected")){
-                event.target.setAttribute("class", "seat");
-                count--;
-                total -= price;
-            }else{
-                event.target.setAttribute("class", "seat selected");
+            var price = proy.precio;
+            if (!event.target.classList.contains('occupied')){
+                if(event.target.classList.contains("selected")){
+                    event.target.setAttribute("class", "seat");
+                    count--;
+                    total -= price;
+                }else{
+                    count++;
+                    total = count * price;
+                    event.target.setAttribute("class", "seat selected");
+                }
+                document.getElementById("count").innerText=count;
+                document.getElementById("total").innerText=total;
             }
-            document.getElementById("count").innerText=count;
-            document.getElementById("total").innerText=total;
-        }
         });
     }
-    $('#add-modal-butacas').modal('show');
-}
-
-function pintarButacas(){
     
+    $('#add-modal-butacas').modal('show');
+    $("#agregarCompra").click(comprar);
 }
 
-/*function list(){
-    $("#listado").html("");
-    personas.forEach( (p)=>{row($("#listado"),p);});	
-  }  
-  
-  function row(listado,persona){
-	var tr =$("<tr />");
-	tr.html("<td>"+persona.cedula+"</td>"+
-                "<td>"+persona.nombre+"</td>"+
-                "<td><img src='images/"+persona.sexo+".png' class='icon' ></td>"+
-                "<td><img src='"+url+"api/personas/"+persona.cedula+"/imagen' class='icon_large' ></td>"+                
-                "<td id='edit'><img src='images/edit.png'></td>");
-        tr.find("#edit").on("click",()=>{edit(persona.cedula);});
-	listado.append(tr);           
-  }*/
+function comprarButacas(){
+    for(let i = 0; i < proy.sala.filas; i++){
+        for(let j = 0; j < proy.sala.columnas; j++){
+            var asiento = $("#" + i + ".row > #" + j + ".seat");
+            if(asiento.attr("class") == "seat selected"){
+                butaca.columna = j;
+                butaca.fila = i;
+                butacas.push(butaca);
+                resetButaca();
+            }
+        }
+    }
+}
+
+async function comprar(){
+    comprarButacas();
+    compra.precio_total = Number.parseInt($("#total").text());
+    compra.proyeccion = proy;
+    compra.butacas = butacas;
+    compra.cliente = JSON.parse(sessionStorage.getItem('user'));
+    if(!validarCompra()) return;
+    let request = new Request(url + "api/compras",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(compra)});
+    const response = await fetch(request);
+    if (!response.ok) {
+        return;
+    }
+    resetButacas();
+    recuperarCompras();
+    $("#add-modal-butacas #errorDiv").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha realizado su compra'+'</div>'); 
+}
+
+function validarCompra(){
+    var error = false;
+    $("#tarjeta").removeClass("invalid");
+    error |= $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;        
+    $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    return !error;
+  }
 
 async function recuperarCompras(){
     let request = new Request(url+'api/compras', {method: 'GET', headers: { }});
@@ -208,8 +241,8 @@ async function recuperarCompras(){
 }
 
 function fetchAndListShows(){
-    listAllShows();
     recuperarCompras();
+    listAllShows();
 }
 
 

@@ -17,14 +17,12 @@ public class Sala {
     private int filas;
     private int columnas;
     private String nombre;
-    private List<Butaca> butacas;
     
     public Sala(){
         this.id = 0;
         this.filas = 0;
         this.columnas = 0;
         this.nombre = "";
-        this.butacas = new ArrayList<>();
     }
 
     public Sala(int id, int filas, int columnas, String nombre, List<Butaca> butacas) {
@@ -32,7 +30,6 @@ public class Sala {
         this.filas = filas;
         this.columnas = columnas;
         this.nombre = nombre;
-        this.butacas = butacas;
     }
 
     public int getFilas() {
@@ -67,18 +64,6 @@ public class Sala {
         this.nombre = nombre;
     }
 
-    public List<Butaca> getButacas() {
-        return butacas;
-    }
-
-    public void setButacas(List<Butaca> butacas) {
-        this.butacas = butacas;
-    }
-    
-    public void addButaca(Butaca butaca){
-        this.butacas.add(butaca);
-    }
-
     @Override
     public int hashCode() {
         int hash = 5;
@@ -98,9 +83,6 @@ public class Sala {
         }
         final Sala other = (Sala) obj;
         if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.butacas, other.butacas)) {
             return false;
         }
         return true;

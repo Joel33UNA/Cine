@@ -41,9 +41,9 @@ public class Butacas {
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Butaca> search(@DefaultValue("") @QueryParam("id_sala") String sala) { 
+    public List<Butaca> search() { 
         try {
-            return Service.instancia().butacasSala(sala);
+            return Service.instancia().butacasAll();
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }

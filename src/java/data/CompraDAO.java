@@ -22,9 +22,9 @@ import logic.Sala;
 public class CompraDAO {
     
     public static void add(Compra c) throws Exception{
-        String sql = "insert into compras (id, id_cli, id_pro, precio_total)"
-                + "values (%s, '%s', %s, %s)";
-        sql = String.format(sql, c.getId(), c.getCliente().getId(), c.getProyeccion().getId());
+        String sql = "insert into compras (id_cli, id_pro, precio_total)"
+                + "values ('%s', %s, %s)";
+        sql = String.format(sql, c.getCliente().getId(), c.getProyeccion().getId(), c.getPrecio_total());
         PreparedStatement stm1 = Connection.instance().prepareStatement(sql);
         if(Connection.instance().executeUpdate(stm1) == 0){
             throw new Exception("Compra ya existe");
@@ -55,6 +55,18 @@ public class CompraDAO {
         }
     }
     
+    public static Compra readLast() throws Exception{
+        String sql = "select* from compras order by id desc limit 1";
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        if(rs.next()){
+            return from(rs);
+        }
+        else{
+            return null;
+        }
+    }
+    
     public static Compra from (ResultSet rs) throws Exception{
         try {
             Compra r = new Compra();
@@ -65,6 +77,8 @@ public class CompraDAO {
             p = data.ProyeccionDAO.readProyeccion(rs.getInt("id_pro"));
             r.setCliente(c);
             r.setProyeccion(p);
+            r.setPrecio_total(rs.getDouble("precio_total"));
+            r.setButacas(data.ButacaDAO.readButacaByCompra(rs.getInt("id")));
             return r;
         } catch (SQLException ex) {
             return null;
