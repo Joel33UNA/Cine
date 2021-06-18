@@ -26,8 +26,8 @@ function nav(){
                     "</li>" +
                 "</ul>" +
                 "<form class='form-inline my-2 my-lg-0'>" +
-                    "<input class='form-control mr-sm-2' type='search' placeholder='Buscar' aria-label='Search'>" +
-                    "<button type='button' class='btn btn-danger'>Buscar</button>" +
+                    "<input class='form-control mr-sm-2' id='searchInput' type='search' placeholder='Buscar' aria-label='Search'>" +
+                    "<button type='button' class='btn btn-danger' id='searchButton'>Buscar</button>" +
                 "</form>" +
             "</div>" +
         "</nav>");
@@ -53,8 +53,8 @@ function navClient(){
                     "</li>" +
                 "</ul>" +
                 "<form class='form-inline my-2 my-lg-0'>" +
-                    "<input class='form-control mr-sm-2' type='search' placeholder='Buscar' aria-label='Search'>" +
-                    "<button type='button' class='btn btn-danger'>Buscar</button>" +
+                    "<input class='form-control mr-sm-2' id='searchInput' type='search' placeholder='Buscar' aria-label='Search'>" +
+                    "<button type='button' class='btn btn-danger' id='searchButton'>Buscar</button>" +
                 "</form>" +
             "</div>" +
         "</nav>");

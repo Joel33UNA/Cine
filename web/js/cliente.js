@@ -40,7 +40,36 @@ async function listAllShows(){
             var li = $("<li />");
             li.html("<a href='#' role='button' class='comprar' id='" + proy.id +"'>" + proy.fecha + "</a>");
             $("#" + peli.id + ".downdiv ul").append(li);
-        });
+        }); 
+    });
+    $('.comprar').click(showCompra);
+}
+
+async function search(){
+    if($("#searchInput").filter( (i,e)=>{ return e.value=='';}).length > 0)
+        var filtro = "/";
+    else 
+        var filtro = "/" + $("#searchInput").val() + "/";
+    let request = new Request(url+'api/peliculas' + filtro + 'cartelera', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if(!response) return;
+    peliculas = await response.json();
+    $("#body").html("");
+    var div = $("<div />", {"id":"movies", class:"grid-container"});
+    $("#body").append(div);
+    peliculas.forEach(function(peli){
+        var div2 = $("<div />", {"class":"father"});
+        div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
+                 "<div class='downdiv' id='" + peli.id +"'>" +  
+                    "<p>" + peli.nombre + "</p>" +
+                    "<ul></ul>" +
+                 "</div>");
+        div.append(div2); 
+        peli.proyecciones.forEach(function(proy){
+            var li = $("<li />");
+            li.html("<a href='#' role='button' class='comprar' id='" + proy.id +"'>" + proy.fecha + "</a>");
+            $("#" + peli.id + ".downdiv ul").append(li);
+        }); 
     });
     $('.comprar').click(showCompra);
 }
@@ -101,9 +130,6 @@ function showCompra(){
                                 "<div class='container'>"+
                                     "<div class='screen'></div>"+
                                     "<div class='allRows' id='allRows'>"+
-                                        /*"<div class='row'>"+
-                                            "<div id='seat' class='seat'></div>"+
-                                        "</div"+*/
                                     "</div>"+
                                 "</div>"+
                                 "<p class='text' style='font-size: 1em;margin:0px 0px 15px 0px'>Usted ha seleccionado "+
@@ -187,6 +213,7 @@ function showCompra(){
     
     $('#add-modal-butacas').modal('show');
     $("#agregarCompra").click(comprar);
+    $("#agregarCompra").click(printPDF);
 }
 
 function comprarButacas(){
@@ -283,6 +310,33 @@ function renderCompras(){
     });
 }
 
+function printPDF(){
+    var cliente = JSON.parse(sessionStorage.getItem('user'));
+    var nomPro = peli.nombre;
+    var fec = proy.fecha;
+    var cant = Number.parseInt($("#count").text());
+    var pre = proy.precio;
+    var tot = Number.parseInt($("#total").text());
+    var doc = new jsPDF();
+    doc.setFont("courier", "bolditalic");
+    doc.setFontSize(40);
+    doc.setTextColor(255, 0, 0);
+    doc.text("CinePlus",105, 30, null, null, "center");
+    doc.setFont("times", "normal");
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Datos de la compra", 105, 50, null, null, "center");
+    doc.setFont("times", "italic");
+    doc.text("Cliente: " + cliente.nombre, 20, 60);
+    doc.setFont("times", "italic");
+    doc.text("Proyección/Película: " + nomPro, 20, 75);
+    doc.text("Fecha/Hora: " + fec, 20, 90);
+    doc.text("Cantidad de butacas: " + cant, 20, 105);
+    doc.text("Precio por butaca: " + pre + " colones", 20, 120);
+    doc.text("Total a pagar: " + tot + " colones", 20, 135);
+    doc.save(cliente.nombre + '_' + nomPro + '.pdf');
+}
+
 async function fetchAndListCompras(){
     var usuario = JSON.parse(sessionStorage.getItem('user'));
     let request = new Request(url+'api/compras/' + usuario.id, {method: 'GET', headers: { }});
@@ -310,6 +364,7 @@ function signoff(){
 function loadNav(){
     $("#purchases").click(fetchAndListCompras);
     $("#signoff").click(signoff);
+    $("#searchButton").click(search);
 }
 
 function loaded(){ //async00

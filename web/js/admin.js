@@ -506,7 +506,7 @@ function renderAllCompras(){
                 "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.precio_total + "</td>" +
-                "<td><a href='#' id='" + compra.id + "'>Imprimir tiquetes</a></td>");
+                "<td><a href='#' id='" + compra.id + "'>Imprimir tiquete</a></td>");
         tbody.append(tr);
         $("#" + compra.id).click(printPDF);
     });

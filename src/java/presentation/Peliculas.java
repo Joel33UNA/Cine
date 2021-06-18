@@ -42,7 +42,7 @@ public class Peliculas {
     @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Pelicula> search(@DefaultValue("") @QueryParam("nombre") String nombre) { 
+    public List<Pelicula> searchAll(@DefaultValue("") @QueryParam("nombre") String nombre) { 
         try {
             return Service.instancia().peliculaSearch(nombre);
         } catch (Exception ex) {
@@ -64,11 +64,11 @@ public class Peliculas {
     
     //@PermitAll
     @GET
-    @Path("{nombre}")
+    @Path("{nombre}/cartelera")
     @Produces({MediaType.APPLICATION_JSON})
-    public Pelicula get(@PathParam("nombre") String nombre) {
+    public List<Pelicula> getCarteleraFiltro(@PathParam("nombre") String nombre) {
         try {
-            return Service.instancia().pelicEspec(nombre);
+            return Service.instancia().getCarteleraFiltro(nombre);
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
