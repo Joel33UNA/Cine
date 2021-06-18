@@ -40,7 +40,36 @@ async function listAllShows(){
             var li = $("<li />");
             li.html("<a href='#' role='button' class='comprar' id='" + proy.id +"'>" + proy.fecha + "</a>");
             $("#" + peli.id + ".downdiv ul").append(li);
-        });
+        }); 
+    });
+    $('.comprar').click(showCompra);
+}
+
+async function search(){
+    if($("#searchInput").filter( (i,e)=>{ return e.value=='';}).length > 0)
+        var filtro = "/";
+    else 
+        var filtro = "/" + $("#searchInput").val() + "/";
+    let request = new Request(url+'api/peliculas' + filtro + 'cartelera', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if(!response) return;
+    peliculas = await response.json();
+    $("#body").html("");
+    var div = $("<div />", {"id":"movies", class:"grid-container"});
+    $("#body").append(div);
+    peliculas.forEach(function(peli){
+        var div2 = $("<div />", {"class":"father"});
+        div2.html("<div class='updiv'><img src='"+url+"api/peliculas/"+peli.nombre+"/imagen' ></div>"+
+                 "<div class='downdiv' id='" + peli.id +"'>" +  
+                    "<p>" + peli.nombre + "</p>" +
+                    "<ul></ul>" +
+                 "</div>");
+        div.append(div2); 
+        peli.proyecciones.forEach(function(proy){
+            var li = $("<li />");
+            li.html("<a href='#' role='button' class='comprar' id='" + proy.id +"'>" + proy.fecha + "</a>");
+            $("#" + peli.id + ".downdiv ul").append(li);
+        }); 
     });
     $('.comprar').click(showCompra);
 }
@@ -308,6 +337,7 @@ function signoff(){
 function loadNav(){
     $("#purchases").click(fetchAndListCompras);
     $("#signoff").click(signoff);
+    $("#searchButton").click(search);
 }
 
 function loaded(){ //async00

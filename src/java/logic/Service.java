@@ -162,9 +162,15 @@ public class Service {
         return result;
     }
 
-    public Pelicula pelicEspec(String nombre) throws Exception {
-        Pelicula p = data.PeliculaDAO.readPelicula(nombre);
-        return p;
+    public List<Pelicula> getCarteleraFiltro(String nombre) throws Exception {
+        List<Pelicula> result = new ArrayList<>();
+        List<Pelicula> filtro = data.PeliculaDAO.filtrarPeliculas(nombre + "%");
+        for(Pelicula p : filtro){
+            if(p.getEstado().equals("en cartelera")){
+                result.add(p);
+            }
+        }
+        return result;
     }
 
     public void peliculaAdd(Pelicula p) throws Exception {

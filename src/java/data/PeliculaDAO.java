@@ -30,6 +30,18 @@ public class PeliculaDAO {
         return pelis;
     }
     
+    public static List<Pelicula> filtrarPeliculas(String nombre) throws Exception{
+        List<Pelicula> pelis = new ArrayList<>();
+        String sql = "select* from peliculas where nombre like '%s'";
+        sql = String.format(sql, nombre);
+        PreparedStatement stm = Connection.instance().prepareStatement(sql);
+        ResultSet rs = Connection.instance().executeQuery(stm);
+        while(rs.next()){
+            pelis.add(from(rs));
+        }
+        return pelis;
+    }
+    
     public static Pelicula readPelicula(String nombre) throws Exception{
         String sql = "select* from peliculas where nombre=%s";
         sql = String.format(sql, nombre);
