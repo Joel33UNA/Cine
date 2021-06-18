@@ -23,10 +23,12 @@ import javax.ws.rs.core.MediaType;
 import logic.Sala;
 import logic.Service;
 
-@PermitAll
+
 @Path("/salas")
+@PermitAll
 public class Salas {
     
+    //@PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Sala> searchAll() { 
@@ -38,6 +40,7 @@ public class Salas {
         }
     }
     
+    //@RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Sala s) {  

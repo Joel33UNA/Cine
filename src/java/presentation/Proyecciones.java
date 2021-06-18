@@ -36,8 +36,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-@PermitAll
 @Path("/proyecciones")
+@PermitAll
 public class Proyecciones {
     String location="C:/imagenesProyecto/proyecciones/";
     
@@ -51,17 +51,7 @@ public class Proyecciones {
         }
     }
     
-//    @GET
-//    @Path("{nombre}")
-//    @Produces({MediaType.APPLICATION_JSON})
-//    public List<Proyeccion> search(@PathParam("nombre") String nombre) {
-//        try {
-//            return Service.instancia().proyecsPeli(nombre);
-//        } catch (Exception ex) {
-//            throw new NotFoundException(); 
-//        }
-//    }
-    
+    //@PermitAll
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -73,6 +63,7 @@ public class Proyecciones {
         }
     } 
     
+    //@RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Proyeccion p) {  

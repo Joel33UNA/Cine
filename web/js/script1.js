@@ -105,6 +105,7 @@ function renderCheckin(){
     $('#aplicar2').on('click', checkin);
     $("#add-modal-checkin #errorDiv2").html("");     
     $('#add-modal-checkin').modal('show');
+    $("#aplicar2").prop('disabled', false);
 }
 
 function validarLogin(){
@@ -257,6 +258,7 @@ function checkin(){
             '<button type="button" class="close" data-dismiss="alert">' +
             '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha registrado con éxito'+'</div>');               
     })();
+    $("#aplicar2").prop('disabled', true);
 }
 
 function errorMessage(status,place){  

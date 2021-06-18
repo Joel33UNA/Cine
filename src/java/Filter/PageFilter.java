@@ -26,15 +26,15 @@ public class PageFilter implements Filter {
 
     public PageFilter(){
         protectedPages = new ArrayList<>();
-        protectedPages.add("/Cine/administrador.html"); 
-        protectedPages.add("/Cine/cliente.html"); 
+        protectedPages.add("/administrador.html"); 
+        protectedPages.add("/cliente.html");
     }
     public void doFilter(ServletRequest request, ServletResponse response,FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession session = httpRequest.getSession(true);
         String recurso=httpRequest.getRequestURI();
         if (protectedPages.contains(recurso) && session.getAttribute("user")==null)
-            request.getRequestDispatcher("index.html").forward( request, response);
+            request.getRequestDispatcher("/index.html").forward( request, response);
         else
             chain.doFilter(request, response);
     }

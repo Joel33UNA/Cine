@@ -14,6 +14,7 @@ var url = "http://localhost:8080/Cine/";
 
 var salas = new Array();
 var sala = { filas: 0, columnas:0, nombre:"", id:0 };
+var compras1 = new Array();
 
 async function fetchAndListRooms(){
     let request = new Request(url+'api/salas', {method: 'GET', headers: { }});
@@ -213,7 +214,11 @@ async function loadIngresoProyec(){
                                     "<option value='Jul 01, 5pm'>Jul 01, 5pm</option>" +
                                     "<option value='Jul 01, 8pm'>Jul 01, 8pm</option>" +
                                     "<option value='Jul 02, 10am'>Jul 02, 10am</option>" +
-                                    "<option value='Jul 02, 10am'>Jul 02, 10am</option>" +
+                                    "<option value='Jun 30, 3pm'>Jun 30, 3pm</option>" +
+                                    "<option value='Jun 28, 11am'>Jun 28, 11am</option>" +
+                                    "<option value='Jul 04, 1pm'>Jul 04, 1pm</option>" +
+                                    "<option value='Jul 05, 8am'>Jul 05, 8am</option>" +
+                                    "<option value='Jun 26, 2pm'>Jun 26, 2pm</option>" +
                                 "</select>" +
                             "</div>" +
                         "</div>" +
@@ -295,7 +300,7 @@ async function fetchAndListShows(){
 }
 
 //==============================================================================================================
-//================    MOVIES    =================================================================================
+//================    MOVIES    ================================================================================
 //==============================================================================================================
 
 var peliculas = new Array();
@@ -472,25 +477,71 @@ function addImagen(){
     })();    
   }
 
-//   EL UPDATE CREO QUE SE NECESITA PARA ACTUALIZAR EL ESTADO DE LA PELICULA
-
-/*function update(){
-    load();
-    if(!validarAddMovie()) return;
-    let request = new Request(url+"api/peliculas/actualizar", 
-                            {method: 'PUT', 
-                            headers: { 'Content-Type': 'application/json'},
-                            body: JSON.stringify(pelicula)});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status,$("#add-modal #errorDiv"));return;}
-        fetchAndList();
-        resetMovies();
-        $('#add-modal').modal('hide');                
-    })();     
-  }*/
 
 
+//==============================================================================================================
+//================    PDF-PURCHASES    =========================================================================
+//==============================================================================================================
+
+function renderAllCompras(){
+    var div = $("#body").html("");
+    div.html("<table class='table table-striped' id='tablaAllCompras'>" +
+                "<thead>" +
+                    "<tr>" +
+                        "<th scope='col'>Proyección/Película</th>" +
+                        "<th scope='col'>Fecha/Hora</th>" +
+                        "<th scope='col'>Cantidad de butacas</th>" +
+                        "<th scope='col'>Precio por butaca</th>" +
+                        "<th scope='col'>Total a pagar</th>" +
+                        "<th scope='col'>Tiquetes</th>" +
+                    "</tr>" +
+                "</thead>" +
+                "<tbody></tbody>" +
+             "</table>");
+    var tbody = $("#tablaAllCompras tbody");
+    compras1.forEach(function(compra){
+        var tr = $("<tr />");
+        tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
+                "<td>" + compra.proyeccion.fecha + "</td>" +
+                "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
+                "<td>₡" + compra.proyeccion.precio + "</td>" +
+                "<td>₡" + compra.precio_total + "</td>" +
+                "<td><a href='#' id='" + compra.id + "'>Imprimir tiquetes</a></td>");
+        tbody.append(tr);
+        $("#" + compra.id).click(printPDF);
+    });
+}
+
+function printPDF(){
+    var id = event.target.id;
+    var compra1 = compras1.find(function(c){ return c.id == id });
+    var doc = new jsPDF();
+    doc.setFont("courier", "bolditalic");
+    doc.setFontSize(40);
+    doc.setTextColor(255, 0, 0);
+    doc.text("CinePlus",105, 30, null, null, "center");
+    doc.setFont("times", "normal");
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Datos de la compra", 105, 50, null, null, "center");
+    doc.setFont("times", "italic");
+    doc.text("Cliente: " + compra1.cliente.nombre, 20, 60);
+    doc.setFont("times", "italic");
+    doc.text("Proyección/Película: " + compra1.proyeccion.pelicula.nombre, 20, 75);
+    doc.text("Fecha/Hora: " + compra1.proyeccion.fecha, 20, 90);
+    doc.text("Cantidad de butacas: " + compra1.precio_total / compra1.proyeccion.precio, 20, 105);
+    doc.text("Precio por butaca: " + compra1.proyeccion.precio + " colones", 20, 120);
+    doc.text("Total a pagar: " + compra1.precio_total + " colones", 20, 135);
+    doc.save(compra1.cliente.nombre + '_' + compra1.proyeccion.pelicula.nombre + '.pdf');
+}
+
+async function fetchAndListAllCompras(){
+    let request = new Request(url+'api/compras/', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    compras1 = await response.json();
+    renderAllCompras();
+}
 //==============================================================================================================
 //==============================================================================================================
 //==============================================================================================================
@@ -505,10 +556,11 @@ function loadNav(){
     $("#addmovie").click(fetchAndListMovies);
     $("#addroom").click(fetchAndListRooms);
     $("#addshow").click(fetchAndListShows);
+    $("#showticket").click(fetchAndListAllCompras);
     $("#signoff").click(signoff);
 }
 
-function loaded(){ /* async00*/
+function loaded(){ 
     loadNav();
     fetchAndListMovies();
     fetchAndListShows();

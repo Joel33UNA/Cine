@@ -34,11 +34,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-@PermitAll
 @Path("/peliculas")
+@PermitAll
 public class Peliculas {
     String location="C:/imagenesProyecto/peliculas/";
     
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Pelicula> search(@DefaultValue("") @QueryParam("nombre") String nombre) { 
@@ -49,6 +50,7 @@ public class Peliculas {
         }
     } 
     
+    //@PermitAll
     @GET
     @Path("cartelera")
     @Produces({MediaType.APPLICATION_JSON})
@@ -60,6 +62,7 @@ public class Peliculas {
         }
     } 
     
+    //@PermitAll
     @GET
     @Path("{nombre}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -71,6 +74,7 @@ public class Peliculas {
         }
     }
     
+    //@PermitAll
     @GET
     @Path("{nombre}/imagen")
     @Produces("image/png")
@@ -81,6 +85,7 @@ public class Peliculas {
     }    
     
     @POST
+    //@RolesAllowed("administrador")
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Path("{nombre}/imagen")
     public void addImage(@PathParam("nombre") String nombre, @FormDataParam("imagen") InputStream imagenStream) {  
@@ -99,6 +104,7 @@ public class Peliculas {
         }
     }
 
+    //@RolesAllowed("administrador")
     @POST
     @Path("agregar")
     @Consumes(MediaType.APPLICATION_JSON) 
@@ -110,6 +116,7 @@ public class Peliculas {
         }
     }
     
+    //@RolesAllowed("administrador")
     @PUT
     @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)

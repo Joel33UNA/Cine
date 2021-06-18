@@ -265,7 +265,8 @@ function renderCompras(){
                         "<th scope='col'>Proyección/Película</th>" +
                         "<th scope='col'>Fecha/Hora</th>" +
                         "<th scope='col'>Cantidad de butacas</th>" +
-                        "<th scope='col'>Total</th>" +
+                        "<th scope='col'>Precio por butaca</th>" +
+                        "<th scope='col'>Total a pagar</th>" +
                     "</tr>" +
                 "</thead>" +
                 "<tbody></tbody>" +
@@ -276,7 +277,8 @@ function renderCompras(){
         tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
                 "<td>" + compra.proyeccion.fecha + "</td>" +
                 "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
-                "<td>" + compra.precio_total + "</td>");
+                "<td>₡" + compra.proyeccion.precio + "</td>" +
+                "<td>₡" + compra.precio_total + "</td>");
         tbody.append(tr);
     });
 }

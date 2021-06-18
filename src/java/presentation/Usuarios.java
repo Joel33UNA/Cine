@@ -62,28 +62,4 @@ public class Usuarios {
             throw new NotAcceptableException(); 
         }
     }
-
-    /*
-    NO SE EDITAN NI SE AGREGAN USUARIOS
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void update(Usuario u) {  
-        try {
-            Service.instancia().usuarioUpdate(u);
-        } catch (Exception ex) {
-            throw new NotFoundException(); 
-        }
-    }
-    
-
-    @DELETE
-    @Path("{cedula}")
-    public void del(@PathParam("cedula") String cedula) {
-        try {
-            Model.instance().personaDelete(cedula);
-        } catch (Exception ex) {
-            throw new NotFoundException(); 
-        }
-    }
-    */
 }

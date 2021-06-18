@@ -35,8 +35,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-@PermitAll
+
 @Path("/butacas")
+//@PermitAll
 public class Butacas {
     
     @GET
@@ -59,14 +60,4 @@ public class Butacas {
             throw new NotFoundException(); 
         }
     }
-    
-    /*@POST
-    @Consumes(MediaType.APPLICATION_JSON) 
-    public void add(Butaca b) {  
-        try {
-            Service.instancia().butacaAdd(b);
-        } catch (Exception ex) {
-            throw new NotAcceptableException(); 
-        }
-    }*/
 }
