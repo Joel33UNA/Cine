@@ -85,12 +85,12 @@ function resetButacas(){
 function showCompra(){
     var n = event.target.id;
     peliculas.forEach(function(pel){
-       pel.proyecciones.forEach(function(pro){
-          if(pro.id == n){ 
-              peli = pel;
-              proy = pro;
-          } 
-       });
+        pel.proyecciones.forEach(function(pro){
+            if(pro.id == n){ 
+                peli = pel;
+                proy = pro;
+            } 
+        });
     });
     
     var div = $("#popupbutacas");
@@ -151,7 +151,7 @@ function showCompra(){
                 "</div>" +
             "</div>" +              
         "</div>");
-      $('#text-regiButacas-msg').val(peli.nombre);
+    $('#text-regiButacas-msg').val(peli.nombre);
     var peliSala = $("#text-regiButacas-msg");
     var descr = $("<h4 />");
     descr.html(peli.nombre + " - " + proy.fecha + " / "+ proy.sala.nombre);
@@ -310,6 +310,7 @@ function renderCompras(){
 }
 
 function printPDF(){
+    if(validarCompra) return;
     var cliente = JSON.parse(sessionStorage.getItem('user'));
     var nomPro = peli.nombre;
     var fec = proy.fecha;
@@ -355,7 +356,10 @@ function fetchAndListShows(){
 //==============================================================================================================
 //==============================================================================================================
 
-function signoff(){
+async function signoff(){
+    let request = new Request(url+'api/sesiones/', {method: 'DELETE', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
     sessionStorage.removeItem("user");
     location.href = "/Cine";
 }

@@ -37,10 +37,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("/proyecciones")
-@PermitAll
+
 public class Proyecciones {
     String location="C:/imagenesProyecto/proyecciones/";
     
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Proyeccion> getAll() { 
@@ -51,7 +52,7 @@ public class Proyecciones {
         }
     }
     
-    //@PermitAll
+    @PermitAll
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -63,7 +64,7 @@ public class Proyecciones {
         }
     } 
     
-    //@RolesAllowed("administrador")
+    @RolesAllowed("administrador")
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Proyeccion p) {  

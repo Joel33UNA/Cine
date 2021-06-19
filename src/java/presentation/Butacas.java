@@ -37,9 +37,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 
 @Path("/butacas")
-//@PermitAll
+
 public class Butacas {
     
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Butaca> search() { 
@@ -50,6 +51,7 @@ public class Butacas {
         }
     }
     
+    @PermitAll
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})

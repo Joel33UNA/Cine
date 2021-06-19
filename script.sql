@@ -54,7 +54,6 @@ create table compras(
     id_pro int,
     precio_total double,
     primary key (id),
-    foreign key (id_cli) references clientes(id),
     foreign key (id_pro) references proyecciones(id)
 );
 

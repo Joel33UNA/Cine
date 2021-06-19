@@ -14,6 +14,11 @@ var url = "http://localhost:8080/Cine/";
 
 var peliculas = new Array();
 var proyeccion = { id:0, sala:null, pelicula:null, fecha:"", precio:0 };
+var compras = new Array();
+var butacas = new Array();
+var butaca = { fila: 0, columna:0, compra:null };
+var compra = { cliente:null, proyeccion:null, precio_total:0, butacas:null };
+var peli;
 
 async function listAllShows(){
     let request = new Request(url+'api/peliculas/cartelera', {method: 'GET', headers: { }});
@@ -33,12 +38,11 @@ async function listAllShows(){
         div.append(div2); 
         peli.proyecciones.forEach(function(proy){
             var li = $("<li />");
-            li.html("<a href='#' role='button' class='comprar'>" + proy.fecha + "</a>");
+            li.html("<a href='#' role='button' id='" + proy.id +"' class='comprar'>" + proy.fecha + "</a>");
             $("#" + peli.id + ".downdiv ul").append(li);
-            $('.comprar').on("click", showLogin);
-            sessionStorage.setItem("proy", JSON.stringify(proy));
         });
     });
+    $('.comprar').on("click", showCompra);
 }
 
 async function search(){
@@ -63,13 +67,268 @@ async function search(){
         div.append(div2); 
         peli.proyecciones.forEach(function(proy){
             var li = $("<li />");
-            li.html("<a href='#' role='button' class='comprar'>" + proy.fecha + "</a>");
+            li.html("<a href='#' role='button' id='" + proy.id +"' class='comprar'>" + proy.fecha + "</a>");
             $("#" + peli.id + ".downdiv ul").append(li);
-            $('.comprar').on("click", showLogin);
-            sessionStorage.setItem("proy", JSON.stringify(proy));
         });
     });
+    $('.comprar').on("click", showCompra);
 }
+
+
+
+//==============================================================================================================
+//================   PURCHASES  =========================================-======================================
+//==============================================================================================================
+
+
+
+function showCompra(){
+    var n = event.target.id;
+    peliculas.forEach(function(pel){
+        pel.proyecciones.forEach(function(pro){
+            if(pro.id == n){ 
+                peli = pel;
+                proyeccion = pro;
+            } 
+        });
+    });
+    
+    var div = $("#popupbutacas");
+    div.html("");
+    div.html("<div class='modal fade' id='add-modal-butacas' tabindex='-1' role='dialog'>" + 
+            "<div class='modal-dialog' style='width: 400px'>" + 
+                "<div class='modal-content'>" +
+                    "<div class='modal-header'>" +
+                        "<div > <button type='button' class='close' data-dismiss='modal'> <span aria-hidden='true'>&times;</span></button></div>" +
+                    "</div>" +
+                    "<form id='formularioButacas'>" +
+                        "<div class='modal-body'>" +
+                            "<div id='div-regiButacas-msg'>" +
+                                "<span id='text-regiButacas-msg'></span>" +
+                            "</div>" +
+                            "<br>" +
+                            "<div class='form-group'>" +
+                                "<div id='imagenPro'></div>" +
+                                "<div id='precioPro'></div>" +
+                            "</div>" +
+                            "<div class='form-group'>" + 
+                                "<p>Butacas</p>"+
+                                "<ul class='showcase'>"+
+                                    "<li>"+
+                                        "<div id='seat' class='seat'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Disponible</small>"+
+                                    "</li>"+ 
+                                    "<li>"+
+                                        "<div id='seat' class='seat selected'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Seleccionado</small>"+
+                                    "</li>"+ 
+                                    "<li>"+
+                                        "<div id='seat' class='seat occupied'></div>"+
+                                            "<small class='status' style='font-size: 1em;'>Ocupado</small>"+
+                                    "</li>"+
+                                "</ul>"+
+                                "<div class='container'>"+
+                                    "<div class='screen'></div>"+
+                                    "<div class='allRows' id='allRows'></div>"+
+                                "</div>"+
+                                "<p class='text' style='font-size: 1em;margin:0px 0px 15px 0px'>Usted ha seleccionado "+
+                                    "<span id='count'>0</span> butacas por el precio de ₡" +
+                                    "<span id='total'>0</span>" +
+                                "</p>"+
+                                "<div class='form-group'>" +
+                                    "<label for='cliente'>Identificación</label>" +
+                                    "<input type='text' class='form-control' name='cliente' id='idCli' placeholder='Identificación de cliente'>" +
+                                "</div>" +
+                                "<div class='form-group'>" +
+                                    "<label for='tarjeta'>Tarjeta</label>" +
+                                    "<input type='text' class='form-control' name='tarjeta' id='tarjeta' placeholder='Número de tarjeta'>" +
+                                "</div>" +
+                            "</div>" +
+                        "</div>" +
+                    "</form>" +
+                    "<div class='modal-footer d-flex justify-content-center'>"+
+                        "<div>" +
+                            "<input type='button' id='agregarCompra' class='btn btn-primary btn-lg btn-block' value='Comprar'>"+
+                        "</div>" +
+                    "</div>" +      
+                    "<div id='errorDiv' style='width:70%; margin: auto;'></div>" +
+                "</div>" +
+            "</div>" +              
+        "</div>");
+    $('#text-regiButacas-msg').val(peli.nombre);
+    var peliSala = $("#text-regiButacas-msg");
+    var descr = $("<h4 />");
+    descr.html(peli.nombre + " - " + proyeccion.fecha + " / "+ proyeccion.sala.nombre);
+    peliSala.append(descr);
+    var pelIma = $("#imagenPro");
+    var foto = $("<img />", { "src":url+"api/peliculas/"+peli.nombre+"/imagen" });
+    pelIma.append(foto);
+    var proyePrecio = $("#precioPro");
+    var pre = $("<p />");
+    pre.html("Precio = ₡" + proyeccion.precio);
+    proyePrecio.append(pre);
+    var rows = $("#allRows");
+    var asiento;
+    var comprasProy = new Array();
+    compras.forEach(function(c){
+        if(c.proyeccion.id === proyeccion.id){
+            comprasProy.push(c);
+        } 
+    });
+    for(var i = 0; i < proyeccion.sala.filas; i++){
+        var row = $("<div />", { "class": "row", "id" : i });
+        for(var j = 0; j < proyeccion.sala.columnas; j++){
+            asiento = $("<div />", {"class": "seat", "id" : j});
+            row.append(asiento);
+        }
+        rows.append(row);
+    }
+    comprasProy.forEach(function(c){
+        c.butacas.forEach(function(b){
+           asiento = $("#" + b.fila + ".row > #" + b.columna + ".seat"); 
+           asiento.removeClass();
+           asiento.addClass("seat occupied");
+        });
+    });
+    
+    var count=0;
+    var seats=document.getElementsByClassName("seat");
+    var total;
+    for(var i=0;i<seats.length;i++){
+        var item=seats[i];
+        item.addEventListener("click",(event)=>{
+            var price = proyeccion.precio;
+            if (!event.target.classList.contains('occupied')){
+                if(event.target.classList.contains("selected")){
+                    event.target.setAttribute("class", "seat");
+                    count--;
+                    total -= price;
+                }else{
+                    count++;
+                    total = count * price;
+                    event.target.setAttribute("class", "seat selected");
+                }
+                document.getElementById("count").innerText=count;
+                document.getElementById("total").innerText=total;
+            }
+        });
+    }
+    $('#add-modal-butacas').modal('show');
+    $("#agregarCompra").click(comprar);
+    $("#agregarCompra").click(printPDF);
+}
+
+function comprarButacas(){
+    for(let i = 0; i < proyeccion.sala.filas; i++){
+        for(let j = 0; j < proyeccion.sala.columnas; j++){
+            var asiento = $("#" + i + ".row > #" + j + ".seat");
+            if(asiento.attr("class") === "seat selected"){
+                butaca.columna = j;
+                butaca.fila = i;
+                butacas.push(butaca);
+                resetButaca();
+            }
+        }
+    }
+}
+
+function resetButaca(){
+    butaca = { fila: 0, columna:0, compra:null };
+}
+
+function resetButacas(){
+    butacas = new Array();
+}
+
+async function comprar(){
+    comprarButacas();
+    compra.precio_total = Number.parseInt($("#total").text());
+    compra.proyeccion = proyeccion;
+    compra.butacas = butacas;
+    compra.cliente = {id:$("#idCli").val(),clave:"",rol:"",nombre:"Anonimo"};
+    if(!validarCompra()){
+        $("#add-modal-butacas #errorDiv").html('<div class="alert alert-danger fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Error!</h4>'+'Ha ocurrido un error!'+'</div>'); 
+        return;
+    }
+    let request = new Request(url + "api/compras/",
+                            {method:'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            body: JSON.stringify(compra)});
+    const response = await fetch(request);
+    if (!response.ok) {
+        return;
+    }
+    resetButacas();
+    recuperarCompras(compra.cliente.id);
+    $("#add-modal-butacas #errorDiv").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha realizado su compra'+'</div>'); 
+    $("#agregarCompra").prop('disabled', true);
+}
+
+function validarCompra(){
+    var error = false;
+    var seleccionado = false;
+    for(let i = 0; i < proyeccion.sala.filas; i++){
+        for(let j = 0; j < proyeccion.sala.columnas; j++){
+            var asiento = $("#" + i + ".row > #" + j + ".seat");
+            if(asiento.attr("class") == "seat selected"){
+                seleccionado = true;
+            }
+        }
+    }
+    if(!seleccionado) error = true;
+    $("#idCli").removeClass("invalid");
+    error |= $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;        
+    $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    $("#tarjeta").removeClass("invalid");
+    error |= $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).length > 0;        
+    $("#formularioButacas input[type='text']").filter( (i,e)=>{ return e.value=='';}).addClass("invalid");
+    return !error;
+}
+   
+
+async function recuperarCompras(){
+    let request = new Request(url+'api/compras', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    compras = await response.json();
+}
+
+
+function printPDF(){
+    if(validarCompra) return;
+    var nom = "ANONIMO";
+    var doc = new jsPDF();
+    doc.setFont("courier", "bolditalic");
+    doc.setFontSize(40);
+    doc.setTextColor(255, 0, 0);
+    doc.text("CineProgra",105, 30, null, null, "center");
+    doc.setFont("times", "normal");
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Datos de la compra", 105, 50, null, null, "center");
+    doc.setFont("times", "italic");
+    doc.text("Cliente: " + nom, 20, 60);
+    doc.setFont("times", "italic");
+    doc.text("Proyección/Película: " + peli.nombre, 20, 75);
+    doc.text("Fecha/Hora: " + proyeccion.fecha, 20, 90);
+    doc.text("Cantidad de butacas: " + $("#count").text(), 20, 105);
+    doc.text("Precio por butaca: " + proyeccion.precio + " colones", 20, 120);
+    doc.text("Total a pagar: " + $("#total").text() + " colones", 20, 135);
+    doc.save(nom + '_' + peli.nombre + '.pdf');
+}
+
+
+async function fetchAndListCompras(){
+    let request = new Request(url+'api/compras/', {method: 'GET', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
+    compras = await response.json();
+}
+
 
 //==============================================================================================================
 //================   USERS     =================================================================================
@@ -307,6 +566,7 @@ function loadPopups(){
 function loaded(){
     loadPopups();
     listAllShows();
+    fetchAndListCompras();
     $("#login").click(showLogin);
     $("#checkin").click(showCheckin);
     $("#signoff").click(signoff);

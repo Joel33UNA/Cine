@@ -502,13 +502,23 @@ function renderAllCompras(){
     var tbody = $("#tablaAllCompras tbody");
     compras1.forEach(function(compra){
         var tr = $("<tr />");
-        tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
+        if(compra.cliente != null){
+            tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
                 "<td>" + compra.proyeccion.fecha + "</td>" +
                 "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.precio_total + "</td>" +
                 "<td>" + compra.cliente.nombre + "</td>" +
                 "<td><a href='#' id='" + compra.id + "'>Imprimir tiquete</a></td>");
+        }else{
+            tr.html("<td>" + compra.proyeccion.pelicula.nombre + "</td>" +
+                "<td>" + compra.proyeccion.fecha + "</td>" +
+                "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
+                "<td>₡" + compra.proyeccion.precio + "</td>" +
+                "<td>₡" + compra.precio_total + "</td>" +
+                "<td>Anónimo</td>" +
+                "<td><a href='#' id='" + compra.id + "'>Imprimir tiquete</a></td>");
+        }
         tbody.append(tr);
         $("#" + compra.id).click(printPDF);
     });
@@ -517,6 +527,12 @@ function renderAllCompras(){
 function printPDF(){
     var id = event.target.id;
     var compra1 = compras1.find(function(c){ return c.id == id });
+    var nom;
+    if(compra1.cliente != null){
+        nom = compra1.cliente.nombre;
+    }else{
+        nom = "Anónimo";
+    }
     var doc = new jsPDF();
     doc.setFont("courier", "bolditalic");
     doc.setFontSize(40);
@@ -527,14 +543,14 @@ function printPDF(){
     doc.setTextColor(0, 0, 0);
     doc.text("Datos de la compra", 105, 50, null, null, "center");
     doc.setFont("times", "italic");
-    doc.text("Cliente: " + compra1.cliente.nombre, 20, 60);
+    doc.text("Cliente: " + nom, 20, 60);
     doc.setFont("times", "italic");
     doc.text("Proyección/Película: " + compra1.proyeccion.pelicula.nombre, 20, 75);
     doc.text("Fecha/Hora: " + compra1.proyeccion.fecha, 20, 90);
     doc.text("Cantidad de butacas: " + compra1.precio_total / compra1.proyeccion.precio, 20, 105);
     doc.text("Precio por butaca: " + compra1.proyeccion.precio + " colones", 20, 120);
     doc.text("Total a pagar: " + compra1.precio_total + " colones", 20, 135);
-    doc.save(compra1.cliente.nombre + '_' + compra1.proyeccion.pelicula.nombre + '.pdf');
+    doc.save(nom + '_' + compra1.proyeccion.pelicula.nombre + '.pdf');
 }
 
 async function fetchAndListAllCompras(){
@@ -549,7 +565,10 @@ async function fetchAndListAllCompras(){
 //==============================================================================================================
 
 
-function signoff(){
+async function signoff(){
+    let request = new Request(url+'api/sesiones/', {method: 'DELETE', headers: { }});
+    const response = await fetch(request);
+    if (!response.ok){ return; }
     sessionStorage.removeItem("user");
     location.href = "/Cine";
 }

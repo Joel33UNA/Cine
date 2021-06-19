@@ -39,9 +39,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @PermitAll
 @Path("/compras")
 public class Compras {
-    
-    //@RolesAllowed("cliente")
-    //@PermitAll
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Compra> getComprasAll() { 
@@ -52,8 +50,6 @@ public class Compras {
         }
     }
     
-    //@RolesAllowed("cliente")
-    //@PermitAll
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -65,7 +61,7 @@ public class Compras {
         }
     }
     
-    //@RolesAllowed("cliente")
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Compra c) {  
@@ -75,4 +71,5 @@ public class Compras {
             throw new NotAcceptableException(); 
         }
     }
+    
 }

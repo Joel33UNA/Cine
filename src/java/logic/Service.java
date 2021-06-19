@@ -124,8 +124,10 @@ public class Service {
         List<Compra> todas = data.CompraDAO.readAll();
         List<Compra> filtro = new ArrayList<>();
         for(Compra c : todas){
-            if(c.getCliente().getId().contains(id)){
+            if(c.getCliente() != null){
+                if(c.getCliente().getId().contains(id)){
                 filtro.add(c);
+                }
             }
         }
         return filtro;    
@@ -164,7 +166,7 @@ public class Service {
 
     public List<Pelicula> getCarteleraFiltro(String nombre) throws Exception {
         List<Pelicula> result = new ArrayList<>();
-        List<Pelicula> filtro = data.PeliculaDAO.filtrarPeliculas(nombre + "%");
+        List<Pelicula> filtro = data.PeliculaDAO.filtrarPeliculas("%" + nombre + "%");
         for(Pelicula p : filtro){
             if(p.getEstado().equals("en cartelera")){
                 result.add(p);
