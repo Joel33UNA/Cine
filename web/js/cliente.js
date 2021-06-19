@@ -129,8 +129,7 @@ function showCompra(){
                                 "</ul>"+
                                 "<div class='container'>"+
                                     "<div class='screen'></div>"+
-                                    "<div class='allRows' id='allRows'>"+
-                                    "</div>"+
+                                    "<div class='allRows' id='allRows'></div>"+
                                 "</div>"+
                                 "<p class='text' style='font-size: 1em;margin:0px 0px 15px 0px'>Usted ha seleccionado "+
                                     "<span id='count'>0</span> butacas por el precio de ₡" +
@@ -321,7 +320,7 @@ function printPDF(){
     doc.setFont("courier", "bolditalic");
     doc.setFontSize(40);
     doc.setTextColor(255, 0, 0);
-    doc.text("CinePlus",105, 30, null, null, "center");
+    doc.text("CineProgra",105, 30, null, null, "center");
     doc.setFont("times", "normal");
     doc.setFontSize(18);
     doc.setTextColor(0, 0, 0);
@@ -365,9 +364,11 @@ function loadNav(){
     $("#purchases").click(fetchAndListCompras);
     $("#signoff").click(signoff);
     $("#searchButton").click(search);
+    var cliente = JSON.parse(sessionStorage.getItem('user'));
+    $("#signoff").html("Cerrar Sesión (" + cliente.nombre + ")");
 }
 
-function loaded(){ //async00
+function loaded(){
     loadNav();
     fetchAndListShows();
 }

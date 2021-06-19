@@ -493,6 +493,7 @@ function renderAllCompras(){
                         "<th scope='col'>Cantidad de butacas</th>" +
                         "<th scope='col'>Precio por butaca</th>" +
                         "<th scope='col'>Total a pagar</th>" +
+                        "<th scope='col'>Cliente</th>" +
                         "<th scope='col'>Tiquetes</th>" +
                     "</tr>" +
                 "</thead>" +
@@ -506,6 +507,7 @@ function renderAllCompras(){
                 "<td>" + compra.precio_total / compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.proyeccion.precio + "</td>" +
                 "<td>₡" + compra.precio_total + "</td>" +
+                "<td>" + compra.cliente.nombre + "</td>" +
                 "<td><a href='#' id='" + compra.id + "'>Imprimir tiquete</a></td>");
         tbody.append(tr);
         $("#" + compra.id).click(printPDF);
@@ -519,7 +521,7 @@ function printPDF(){
     doc.setFont("courier", "bolditalic");
     doc.setFontSize(40);
     doc.setTextColor(255, 0, 0);
-    doc.text("CinePlus",105, 30, null, null, "center");
+    doc.text("CineProgra",105, 30, null, null, "center");
     doc.setFont("times", "normal");
     doc.setFontSize(18);
     doc.setTextColor(0, 0, 0);
@@ -558,6 +560,8 @@ function loadNav(){
     $("#addshow").click(fetchAndListShows);
     $("#showticket").click(fetchAndListAllCompras);
     $("#signoff").click(signoff);
+    var admin = JSON.parse(sessionStorage.getItem('user'));
+    $("#signoff").html("Cerrar Sesión (" + admin.nombre + ")");
 }
 
 function loaded(){ 
