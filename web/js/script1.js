@@ -137,7 +137,7 @@ function showCompra(){
                                 "</p>"+
                                 "<div class='form-group'>" +
                                     "<label for='cliente'>Identificación</label>" +
-                                    "<input type='text' class='form-control' name='cliente' id='idCli' placeholder='Identificación de cliente'>" +
+                                    "<input type='text' class='form-control' name='cliente' id='idCli' placeholder='Identificación de cliente anónimo'>" +
                                 "</div>" +
                                 "<div class='form-group'>" +
                                     "<label for='tarjeta'>Tarjeta</label>" +
@@ -539,6 +539,7 @@ function checkin(){
             '<button type="button" class="close" data-dismiss="alert">' +
             '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha registrado con éxito'+'</div>');               
     })();
+    $("#aplicar2").prop('disabled', true);
 }
 
 function errorMessage(status,place){  

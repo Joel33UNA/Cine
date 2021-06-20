@@ -286,6 +286,9 @@ async function addShow(){
     const response = await fetch(request);
     if (!response.ok){ return; }
     listShow();
+    /*$("#add-modal-show #errorDiv2").html('<div class="alert alert-success fade show">' +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'La proyección se ha agregado exitosamente'+'</div>');*/
     $("#agregarproyeccion").prop('disabled', true);
 }
 
@@ -462,7 +465,7 @@ async function registraPeli(){
     resetMovies();
     $("#add-modal #errorDiv").html('<div class="alert alert-success fade show">' +
             '<button type="button" class="close" data-dismiss="alert">' +
-            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'Se ha agregado con éxito'+'</div>');
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'La película se ha agregado exitosamente'+'</div>');
     $("#regPel").prop('disabled', true);
 }
 
