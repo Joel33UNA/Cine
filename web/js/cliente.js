@@ -310,7 +310,9 @@ function renderCompras(){
 }
 
 function printPDF(){
-    if(validarCompra) return;
+    if(!validarCompra()){
+        return;
+    }
     var cliente = JSON.parse(sessionStorage.getItem('user'));
     var nomPro = peli.nombre;
     var fec = proy.fecha;

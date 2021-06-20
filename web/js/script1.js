@@ -299,8 +299,9 @@ async function recuperarCompras(){
 
 
 function printPDF(){
-    if(validarCompra) return;
-    var nom = "ANONIMO";
+    if(!validarCompra()){
+        return;
+    }
     var doc = new jsPDF();
     doc.setFont("courier", "bolditalic");
     doc.setFontSize(40);
@@ -311,14 +312,14 @@ function printPDF(){
     doc.setTextColor(0, 0, 0);
     doc.text("Datos de la compra", 105, 50, null, null, "center");
     doc.setFont("times", "italic");
-    doc.text("Cliente: " + nom, 20, 60);
+    doc.text("Cliente: " + $("#idCli").val() , 20, 60);
     doc.setFont("times", "italic");
     doc.text("Proyección/Película: " + peli.nombre, 20, 75);
     doc.text("Fecha/Hora: " + proyeccion.fecha, 20, 90);
     doc.text("Cantidad de butacas: " + $("#count").text(), 20, 105);
     doc.text("Precio por butaca: " + proyeccion.precio + " colones", 20, 120);
     doc.text("Total a pagar: " + $("#total").text() + " colones", 20, 135);
-    doc.save(nom + '_' + peli.nombre + '.pdf');
+    doc.save($("#idCli").val() + '_' + peli.nombre + '.pdf');
 }
 
 
