@@ -84,7 +84,7 @@ public class Peliculas {
     }    
     
     @POST
-    @RolesAllowed("administrador")
+    @RolesAllowed({"administrador"})
     @Consumes(MediaType.MULTIPART_FORM_DATA) 
     @Path("{nombre}/imagen")
     public void addImage(@PathParam("nombre") String nombre, @FormDataParam("imagen") InputStream imagenStream) {  
@@ -103,7 +103,7 @@ public class Peliculas {
         }
     }
 
-    @RolesAllowed("administrador")
+    @RolesAllowed({"administrador"})
     @POST
     @Path("agregar")
     @Consumes(MediaType.APPLICATION_JSON) 
@@ -115,7 +115,7 @@ public class Peliculas {
         }
     }
     
-    @RolesAllowed("administrador")
+    @RolesAllowed({"administrador"})
     @PUT
     @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)

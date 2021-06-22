@@ -28,9 +28,9 @@ import logic.Service;
 import logic.Usuario;
 
 @Path("/usuarios")
-@PermitAll
 public class Usuarios {
     
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Usuario> search(@DefaultValue("") @QueryParam("nombre") String nombre) { 
@@ -42,6 +42,7 @@ public class Usuarios {
         }
     } 
     
+    @PermitAll
     @GET
     @Path("{cedula}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -53,6 +54,7 @@ public class Usuarios {
         }
     }
 
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Usuario u) {  

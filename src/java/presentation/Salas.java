@@ -39,7 +39,7 @@ public class Salas {
         }
     }
     
-    @RolesAllowed("administrador")
+    @RolesAllowed({"administrador"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Sala s) {  

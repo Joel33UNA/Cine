@@ -455,7 +455,7 @@ function loadLogin(){
                         "</form>" +
                         "<div class='modal-footer d-flex justify-content-center'>" +
                             "<div>" +
-                                "<input type='button' id='aplicar1' class='btn btn-primary btn-lg btn-block' value='Aplicar'>" +
+                                "<input type='button' id='aplicar1' class='btn btn-primary btn-lg btn-block' value='Iniciar Sesión'>" +
                             "</div>" +
                         "</div>" +
                         "<div id='errorDiv1' style='width:70%; margin: auto;'></div>" +
@@ -504,7 +504,7 @@ function loadCheckin(){
                         "</form>" +
                         "<div class='modal-footer d-flex justify-content-center'>" +
                             "<div>" +
-                                "<input type='button' id='aplicar2' class='btn btn-primary btn-lg btn-block' value='Aplicar'>" +
+                                "<input type='button' id='aplicar2' class='btn btn-primary btn-lg btn-block' value='Registrarse'>" +
                             "</div>" +
                         "</div>" +
                         "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +

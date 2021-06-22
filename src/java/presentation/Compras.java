@@ -36,10 +36,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-@PermitAll
+
 @Path("/compras")
 public class Compras {
 
+    @PermitAll
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public List<Compra> getComprasAll() { 
@@ -50,6 +51,7 @@ public class Compras {
         }
     }
     
+    @PermitAll
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -61,7 +63,7 @@ public class Compras {
         }
     }
     
-    
+    @PermitAll
     @POST
     @Consumes(MediaType.APPLICATION_JSON) 
     public void add(Compra c) {  

@@ -90,14 +90,16 @@ function navAdmin(){
 }
 
 function loaded(){
-    if(JSON.parse(sessionStorage.getItem('user')) === null){
-        nav();
-    }
-    else if(JSON.parse(sessionStorage.getItem('user')).rol === 'cliente'){
+    if(JSON.parse(sessionStorage.getItem('user'))){
+        if(JSON.parse(sessionStorage.getItem('user')).rol === 'cliente'){
         navClient();
+        }
+        else if(JSON.parse(sessionStorage.getItem('user')).rol === 'administrador'){
+            navAdmin();
+        }
     }
-    else if(JSON.parse(sessionStorage.getItem('user')).rol === 'administrador'){
-        navAdmin();
+    else{
+        nav();
     }
 }
 

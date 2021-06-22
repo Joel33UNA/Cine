@@ -230,7 +230,7 @@ async function loadIngresoProyec(){
                     "</form>" +
                     "<div class='modal-footer d-flex justify-content-center'>"+
                         "<div>" +
-                            "<input type='button' id='agregarproyeccion' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                            "<input type='button' id='agregarproyeccion' class='btn btn-primary btn-lg btn-block' value='Programar Proyección'>" +
                         "</div>" +
                     "</div>" +      
                     "<div id='errorDiv2' style='width:70%; margin: auto;'></div>" +
@@ -286,9 +286,9 @@ async function addShow(){
     const response = await fetch(request);
     if (!response.ok){ return; }
     listShow();
-    /*$("#add-modal-show #errorDiv2").html('<div class="alert alert-success fade show">' +
+    $("#add-modal-show #errorDiv2").html('<div class="alert alert-success fade show">' +
             '<button type="button" class="close" data-dismiss="alert">' +
-            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'La proyección se ha agregado exitosamente'+'</div>');*/
+            '&times;</button><h4 class="alert-heading">Éxito!</h4>'+'La proyección se ha agregado exitosamente'+'</div>');
     $("#agregarproyeccion").prop('disabled', true);
 }
 
@@ -404,7 +404,7 @@ function loadIngresoPeli(){
                     "</form>"+
                     "<div class='modal-footer d-flex justify-content-center'>"+
                         "<div>" +
-                            "<input type='button' id='regPel' class='btn btn-primary btn-lg btn-block' value='Agregar'>" +
+                            "<input type='button' id='regPel' class='btn btn-primary btn-lg btn-block' value='Agregar Película'>" +
                         "</div>" +
                     "</div>" +      
                     "<div id='errorDiv' style='width:70%; margin: auto;'></div>" +
@@ -583,7 +583,11 @@ function loadNav(){
     $("#showticket").click(fetchAndListAllCompras);
     $("#signoff").click(signoff);
     var admin = JSON.parse(sessionStorage.getItem('user'));
-    $("#signoff").html("Cerrar Sesión (" + admin.nombre + ")");
+    if(admin != null){
+        $("#signoff").html("Cerrar Sesión (" + admin.nombre + ")");
+    }else{
+        $("#signoff").html("Cerrar Sesión");
+    }
 }
 
 function loaded(){ 

@@ -22,12 +22,13 @@ import javax.ws.rs.core.MediaType;
 import logic.Service;
 import logic.Usuario;
 
-@PermitAll
+
 @Path("/sesiones")
 public class Sesiones {
     @Context
     private HttpServletRequest request;
     
+    @PermitAll
     @POST
     @Path("comprobar")
     @Produces({MediaType.APPLICATION_JSON})
@@ -43,6 +44,7 @@ public class Sesiones {
         }
     }
     
+    @PermitAll
     @POST
     @Path("registrarse")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -55,6 +57,7 @@ public class Sesiones {
         }
     }
     
+    @PermitAll
     @DELETE
     public void logout(){
         try{

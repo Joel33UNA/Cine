@@ -371,7 +371,11 @@ function loadNav(){
     $("#signoff").click(signoff);
     $("#searchButton").click(search);
     var cliente = JSON.parse(sessionStorage.getItem('user'));
-    $("#signoff").html("Cerrar Sesión (" + cliente.nombre + ")");
+    if(cliente != null){
+        $("#signoff").html("Cerrar Sesión (" + cliente.nombre + ")");
+    }else{
+        $("#signoff").html("Cerrar Sesión");
+    }
 }
 
 function loaded(){
